@@ -14,7 +14,7 @@
   --night:#0b1419; --night-2:#132530; --aurora:#2f6f6a;
   --frost:#dfe8ea; --frost-2:#9fb3b9; --hair:rgba(223,232,234,.16); --glass:rgba(9,17,22,.74);
   --ember:#e89a45; --ember-deep:#b8642a;
-  --paper:#cfc3a6; --paper-2:#bfb193; --char:#2a2520; --char-2:#5b5145;
+  --paper:#dcdad4; --paper-2:#c9c6be; --char:#141312; --char-2:#45423e; --tag:#ecebe6;
   --easy:#5f6d3b; --mid:#a5772b; --hard:#8c3524;
   --ui:"Oswald","Arial Narrow",Arial,sans-serif;
   --hand:"Kalam","Segoe Print","Comic Sans MS",cursive;
@@ -46,12 +46,12 @@ h2::after{content:"";display:block;width:56px;height:1px;background:var(--ember)
 
 .main{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:20px;align-items:start}
 @media (max-width:920px){.main{grid-template-columns:1fr}}
-.sheet{position:relative;border-radius:3px;box-shadow:0 18px 50px rgba(0,0,0,.55),0 0 0 1px rgba(0,0,0,.4);overflow:hidden;min-width:0;background:var(--paper)}
+.sheet{position:relative;border-radius:3px;box-shadow:0 18px 50px rgba(0,0,0,.6);overflow:hidden;min-width:0;background:#0a0a0a}
 .sheetscroll{overflow-x:auto}
 .sheetscroll svg{display:block;width:100%;min-width:740px;height:auto}
-.legend{display:flex;flex-wrap:wrap;gap:6px 18px;padding:10px 14px;background:var(--paper-2);color:var(--char);font:400 15px var(--hand);border-top:1px solid rgba(42,37,32,.25)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;padding:10px 14px;background:#0a0a0a;color:var(--frost-2);font:400 12px var(--ui);letter-spacing:.12em;text-transform:uppercase}
 .legend span{display:inline-flex;align-items:center;gap:6px}
-.dot{width:11px;height:11px;border-radius:50%;display:inline-block;border:2px solid var(--char)}
+.dot{width:11px;height:11px;border-radius:50%;display:inline-block;border:2px solid var(--frost)}
 
 /* elementy SVG */
 .edge{fill:none;stroke:var(--char);stroke-linecap:round}
@@ -60,21 +60,27 @@ h2::after{content:"";display:block;width:56px;height:1px;background:var(--ember)
 .edge.near{opacity:1;stroke-width:3}
 .edge.on{stroke:var(--ember-deep);opacity:1;stroke-width:4.5}
 .node{cursor:pointer}
-.node text,.tz text,.ex text,.lbl-big{font-family:var(--hand);fill:var(--char)}
+.node text,.tz text,.ex text,.lbl-big{font-family:var(--ui);fill:var(--char)}
+.lab rect{fill:var(--tag)}
+.lab text{font:500 15px var(--ui);letter-spacing:.07em;fill:var(--char)}
+.lab.s text{font-size:11.5px;letter-spacing:.08em}
+.lab.xl text{font-size:30px;letter-spacing:.1em}
+.node:hover .lab rect,.node.sel .lab rect{fill:#fff}
+.node.sel .lab text,.node.onpath .lab text{fill:#000}
+.tz.onpath .lab rect{fill:var(--ember)}
 .node text.n{font-size:20px;font-weight:700}
 .node.dim{opacity:.22}
 .node .glow{fill:var(--ember);opacity:0}
 .node.sel .glow,.node.onpath .glow{opacity:.75}
 .node .tick{font-size:15px;font-weight:700;fill:var(--char)}
-.tz text{font-size:14px;fill:var(--char-2)}
-.tz path{fill:var(--paper);stroke:var(--char);stroke-width:1.6}
+.tz path{fill:var(--tag);stroke:var(--char);stroke-width:1.8}
 .tz.onpath path{fill:var(--ember)}
 .ex{cursor:pointer}
-.ex text{font-size:17px;font-weight:700}
-.ex text:hover{fill:var(--ember-deep)}
-.ex text.via{font-size:14px;font-weight:400;fill:var(--char-2);cursor:default}
+.ex .lab text{font-size:13px}
+.ex .lab:hover rect{fill:var(--ember)}
+.ex .lab.via rect{fill:transparent}.ex .lab.via text{fill:var(--char);font-size:12px}
 .pin{cursor:pointer}
-.pin text{font-family:var(--hand);font-size:15px;fill:var(--char)}
+.pin text{font:500 14px var(--ui);letter-spacing:.04em;fill:var(--char)}
 
 .panel{background:var(--glass);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid var(--hair);border-radius:3px;padding:20px;display:grid;gap:16px;min-width:0}
 .panel h3{margin:0;font:300 30px/1.05 var(--ui);letter-spacing:.08em;text-transform:uppercase}
@@ -207,31 +213,31 @@ const DN={1:'łatwy',2:'średni',3:'trudny'};
 const DC={1:'var(--easy)',2:'var(--mid)',3:'var(--hard)'};
 const TC={1:'#a9bd73',2:'#e0b25c',3:'#e07a62'};
 const R={
- ml:{n:'Tajemnicze Jezioro',en:'Mystery Lake',lp:'up',d:1,x:614,y:318,t:'Śródlądowe jezioro i linia kolejowa, chatki i łowienie ryb. Najlepszy start – środek wyspy, tory jako punkt orientacyjny.',
+ ml:{n:'Jezioro Tajemnic',en:'Mystery Lake',lp:'up',d:1,x:614,y:318,t:'Śródlądowe jezioro i linia kolejowa, chatki i łowienie ryb. Najlepszy start – środek wyspy, tory jako punkt orientacyjny.',
    k:[['Camp Office','biuro obozu nad jeziorem'],['Trapper\'s Homestead','chata trapera, przejście do Milton'],['Carter Hydro Dam','tama, droga do Krętej Rzeki'],['Forestry Lookout','wieża obserwacyjna na wzgórzu'],['Lake Cabins','chatki nad jeziorem'],['Alan\'s Cave','jaskinia przy torach']]},
- ch:{n:'Autostrada Przybrzeżna',en:'Coastal Highway',d:2,x:882,y:491,t:'Zamarznięta zatoka i nadbrzeżna droga z osadą i obozem rybackim.',
-   k:[['Quonset Garage','stacja benzynowa i warsztat'],['Coastal Townsite','osada przy drodze'],['Fishing Camp','obóz rybacki na lodzie'],['Jackrabbit Island','wyspa na zatoce'],['Cinder Hills Coal Mine','kopalnia – przejście do Przyjemnej Doliny']]},
- pv:{n:'Przyjemna Dolina',en:'Pleasant Valley',lp:'r',d:3,x:880,y:286,t:'Otwarte pola i długie odsłonięte trasy – częste zamiecie. Trzymaj się dróg.',
+ ch:{n:'Przybrzeżna Autostrada',en:'Coastal Highway',d:2,x:882,y:491,t:'Zamarznięta zatoka i nadbrzeżna droga z osadą i obozem rybackim.',
+   k:[['Quonset Garage','stacja benzynowa i warsztat'],['Coastal Townsite','osada przy drodze'],['Fishing Camp','obóz rybacki na lodzie'],['Jackrabbit Island','wyspa na zatoce'],['Cinder Hills Coal Mine','kopalnia – przejście do Wesołej Doliny']]},
+ pv:{n:'Wesoła Dolina',en:'Pleasant Valley',lp:'r',d:3,x:880,y:286,t:'Otwarte pola i długie odsłonięte trasy – częste zamiecie. Trzymaj się dróg.',
    k:[['Pleasant Valley Farmstead','duża farma w centrum'],['Thomson\'s Crossing','kościół i domy przy moście'],['Rural Crossroads','skrzyżowanie z budynkami'],['Signal Hill','wzgórze z wieżą radiową'],['Skeeter\'s Ridge','grzbiet z chatkami']]},
- dp:{n:'Przylądek Spustoszenia',en:'Desolation Point',lp:'down',d:2,x:1130,y:550,t:'Zwarte wybrzeże ze starym statkiem wielorybniczym, przetwórnią i kuźnią.',
-   k:[['The Riken','wrak statku wielorybniczego'],['Hibernia Processing','przetwórnia z kuźnią'],['Lonely Lighthouse','latarnia morska'],['Stone Church','kamienny kościół'],['Abandoned Mine No. 3','kopalnia – przejście na Autostradę']]},
- tw:{n:'Góra Wilków',en:'Timberwolf Mountain',lp:'r',d:3,x:1017,y:150,t:'Wysoka góra z wejściem na szczyt, ostra pogoda i długie podejścia.',
-   k:[['Mountaineer\'s Hut','chata alpinisty w połowie drogi'],['Summit','szczyt z rozbitym samolotem'],['Crystal Lake','chatki nad jeziorem'],['Deer Clearing','polana – droga do Kanionu Popiołów'],['Foreman\'s Clearcut','wycinka – jaskinia do Czarnej Skały']]},
- fm:{n:'Zapomniane Bagno',en:'Forlorn Muskeg',d:3,x:464,y:417,t:'Rozległe bagno przecięte torami, cienki lód i mało schronień.',
+ dp:{n:'Pustkowie',en:'Desolation Point',lp:'down',d:2,x:1130,y:550,t:'Zwarte wybrzeże ze starym statkiem wielorybniczym, przetwórnią i kuźnią.',
+   k:[['The Riken','wrak statku wielorybniczego'],['Hibernia Processing','przetwórnia z kuźnią'],['Lonely Lighthouse','latarnia morska'],['Stone Church','kamienny kościół'],['Abandoned Mine No. 3','kopalnia – przejście na Przybrzeżną Autostradę']]},
+ tw:{n:'Wilcza Góra',en:'Timberwolf Mountain',lp:'r',d:3,x:1017,y:150,t:'Wysoka góra z wejściem na szczyt, ostra pogoda i długie podejścia.',
+   k:[['Mountaineer\'s Hut','chata alpinisty w połowie drogi'],['Summit','szczyt z rozbitym samolotem'],['Crystal Lake','chatki nad jeziorem'],['Deer Clearing','polana – droga do Kanionu Popielnego'],['Foreman\'s Clearcut','wycinka – jaskinia do Blackrock']]},
+ fm:{n:'Opuszczone Torfowisko',en:'Forlorn Muskeg',d:3,x:464,y:417,t:'Rozległe bagno przecięte torami, cienki lód i mało schronień.',
    k:[['Old Spence Family Homestead','gospodarstwo Spence\'ów'],['Poacher\'s Camp','obóz kłusowników'],['Shortwave Tower','wieża krótkofalowa'],['Muskeg Overlook','punkt widokowy nad bagnem']]},
- br:{n:'Zniszczona Kolej',en:'Broken Railroad',d:2,x:300,y:363,t:'Krótki region kolejowy z warsztatem kolejowym i domkiem myśliwskim. Brama do Far Territory.',
+ br:{n:'Zniszczone Tory Kolejowe',en:'Broken Railroad',d:2,x:300,y:363,t:'Krótki region kolejowy z warsztatem kolejowym i domkiem myśliwskim. Brama do Far Territory.',
    k:[['Maintenance Yard','warsztat kolejowy z kuźnią'],['Hunting Lodge','domek myśliwski'],['Far Range Branch Line','koniec torów – droga do Przełęczy Przeładunkowej']]},
- mt:{n:'Milton',en:'Mountain Town',lp:'l',al:'Górskie Miasteczko',d:1,x:451,y:198,t:'Region Mountain Town z miasteczkiem Milton w górskiej kotlinie. Mało drapieżników, dużo jedzenia i schronień.',
-   k:[['Milton (miasteczko)','domy, sklep, poczta i bank'],['Grey Mother\'s House','dom Szarej Matki'],['Orca Gas Station','stacja benzynowa'],['Paradise Meadows Farm','farma na obrzeżach'],['Spruce Falls','most – w pobliżu jaskinia do Doliny Cichej Rzeki']]},
- hr:{n:'Dolina Cichej Rzeki',en:'Hushed River Valley',d:3,x:460,y:60,t:'Odległa, wielopoziomowa dolina klifów, jaskiń i wodospadów. Prawie bez budynków – schronienia głównie w jaskiniach.',
+ mt:{n:'Milton',en:'Mountain Town',lp:'l',al:'Górskie Miasteczko Mountain',d:1,x:451,y:198,t:'Region Mountain Town z miasteczkiem Milton w górskiej kotlinie. Mało drapieżników, dużo jedzenia i schronień.',
+   k:[['Milton (miasteczko)','domy, sklep, poczta i bank'],['Grey Mother\'s House','dom Szarej Matki'],['Orca Gas Station','stacja benzynowa'],['Paradise Meadows Farm','farma na obrzeżach'],['Spruce Falls','most – w pobliżu jaskinia do Doliny Spokojnej Rzeki']]},
+ hr:{n:'Dolina Spokojnej Rzeki',en:'Hushed River Valley',d:3,x:460,y:60,t:'Odległa, wielopoziomowa dolina klifów, jaskiń i wodospadów. Prawie bez budynków – schronienia głównie w jaskiniach.',
    k:[['Wodospady','wielopoziomowe zamarznięte wodospady'],['Jaskinie','główne schronienia regionu']]},
  bi:{n:'Ponura Zatoka',en:'Bleak Inlet',d:3,x:672,y:502,t:'Przemysłowe wybrzeże z konserwownią, stromy teren i stada timberwolfów.',
    k:[['Cannery','konserwownia z warsztatem'],['Cannery Workers\' Area','domki pracowników konserwowni']]},
- ac:{n:'Kanion Popiołów',en:'Ash Canyon',d:3,x:1069,y:60,t:'Głęboki kanion z płaskowyżami, mostami linowymi i niewieloma budynkami.',
-   k:[['Miner\'s Folly','stara kopalnia z chatkami'],['Angler\'s Den','chata wędkarza'],['Echo Ravine','wąwóz – droga na Górę Wilków']]},
- bk:{n:'Czarna Skała',en:'Blackrock',lp:'l',d:2,x:914,y:69,t:'Pagórkowaty region z więzieniem, częstymi zamieciami i timberwolfami.',
-   k:[['Blackrock Penitentiary','więzienie'],['Blackrock (miasto)','zabudowania przy drodze'],['Keeper\'s Pass North','przejście do Przyjemnej Doliny']]},
- tp:{n:'Przełęcz Przeładunkowa',en:'Transfer Pass',d:2,x:170,y:290,dlc:1,t:'Spokojna stacja kolejowa – węzeł łączący dolną część wyspy z trzema regionami Far Territory.',
+ ac:{n:'Kanion Popielny',en:'Ash Canyon',d:3,x:1069,y:60,t:'Głęboki kanion z płaskowyżami, mostami linowymi i niewieloma budynkami.',
+   k:[['Miner\'s Folly','stara kopalnia z chatkami'],['Angler\'s Den','chata wędkarza'],['Echo Ravine','wąwóz – droga na Wilczą Górę']]},
+ bk:{n:'Blackrock',en:'Blackrock',lp:'l',d:2,x:914,y:69,t:'Pagórkowaty region z więzieniem, częstymi zamieciami i timberwolfami.',
+   k:[['Blackrock Penitentiary','więzienie'],['Blackrock (miasto)','zabudowania przy drodze'],['Keeper\'s Pass North','przejście do Wesołej Doliny']]},
+ tp:{n:'Przełęcz Przeładunkowa',en:'Transfer Pass',lp:'up',d:2,x:170,y:290,dlc:1,t:'Spokojna stacja kolejowa – węzeł łączący dolną część wyspy z trzema regionami Far Territory.',
    k:[['Stacja kolejowa','depo – węzeł regionu'],['Zawalony tunel','obejście na drodze do Rozdartej Przełęczy']]},
  fa:{n:'Opuszczone Lotnisko',en:'Forsaken Airfield',lp:'up',d:3,x:80,y:120,dlc:1,t:'Szeroka dolina z porzuconym lotniskiem i częstą mgłą glimmer. Tu zaczyna się pierwsza Opowieść.',
    k:[['Control Tower','wieża kontrolna – start pierwszej Opowieści'],['Fallow Dugout','w pobliżu jaskinia do Strefy Skażenia i Rozdartej Przełęczy']]},
@@ -241,20 +247,20 @@ const R={
    k:[['Stoki lawinowe','uważaj na lawiny'],['Droga za tunelem','wyjście do Przełęczy Przeładunkowej']]}
 };
 const T={
- rav:{n:'Wąwóz',en:'The Ravine',x:704,y:403},
+ rav:{n:'Przełęcz',en:'The Ravine',x:704,y:403},
  wr:{n:'Kręta Rzeka',en:'Winding River',x:771,y:362},
- crh:{n:'Kruszejąca Autostrada',en:'Crumbling Highway',up:1,x:944,y:579},
+ crh:{n:'Zniszczona Autostrada',en:'Crumbling Highway',up:1,x:944,y:579},
  kp:{n:'Przełęcz Strażnika',en:"Keeper's Pass",x:900,y:180},
- fr:{n:'Bocznica Dalekiego Pasma',en:'Far Range Branch Line',x:240,y:345},
+ fr:{n:'Bocznica Dalekiego Pasma',en:'Far Range Branch Line',up:1,x:240,y:345},
  cave:{n:'Wspólna jaskinia',en:'transition cave',x:40,y:330}
 };
 const E=[
  ['ml','fm','bezpośrednio, tunelem kolejowym'],
- ['ml','rav','przez Wąwóz'],['ch','rav','przez Wąwóz'],['bi','rav','przez Wąwóz'],
+ ['ml','rav','przez Przełęcz'],['ch','rav','przez Przełęcz'],['bi','rav','przez Przełęcz'],
  ['ml','wr','przez tamę Carter Hydro'],['pv','wr','przez Krętą Rzekę'],
  ['ml','mt','jaskinią koło Trapper\'s Homestead'],
  ['ch','pv','przez kopalnię Cinder Hills'],
- ['ch','crh','przez Kruszejącą Autostradę'],['dp','crh','przez kopalnię nr 3'],
+ ['ch','crh','przez Zniszczoną Autostradę'],['dp','crh','przez kopalnię nr 3'],
  ['pv','tw','wspinaczka po linie koło skrytki Preppera'],
  ['pv','kp','Keeper\'s Pass South'],['bk','kp','Keeper\'s Pass North'],
  ['tw','ac','Echo Ravine lub jaskinią na wschód od Deer Clearing'],
@@ -290,17 +296,54 @@ function regionNeighbours(k){
 
 const NS='http://www.w3.org/2000/svg';
 const mk=(p,t,a)=>{const el=document.createElementNS(NS,t);for(const k in a)el.setAttribute(k,a[k]);p.appendChild(el);return el};
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function defs(svg,w,h){
+  const id=svg.id;
   svg.innerHTML=`<defs>
-   <filter id="rough${svg.id}"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3.5"/></filter>
-   <filter id="grain${svg.id}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0.16  0 0 0 0 0.14  0 0 0 0 0.12  0 0 0 0.55 0"/></filter>
-   <filter id="blur${svg.id}"><feGaussianBlur stdDeviation="5"/></filter>
-   <radialGradient id="vig${svg.id}" cx="50%" cy="50%" r="70%"><stop offset="60%" stop-color="#2a2520" stop-opacity="0"/><stop offset="100%" stop-color="#2a2520" stop-opacity=".38"/></radialGradient>
+   <filter id="rough${id}"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3.5"/></filter>
+   <filter id="torn${id}" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="4" seed="11"/><feDisplacementMap in="SourceGraphic" scale="16"/></filter>
+   <filter id="wash${id}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.006 0.012" numOctaves="4" seed="5" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0.08  0 0 0 0 0.08  0 0 0 0 0.08  0 0 0 -1.6 0.95"/></filter>
+   <filter id="grain${id}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0.1  0 0 0 0 0.1  0 0 0 0 0.1  0 0 0 0.5 0"/></filter>
+   <filter id="blur${id}"><feGaussianBlur stdDeviation="5"/></filter>
+   <filter id="soft${id}"><feGaussianBlur stdDeviation="2.2"/></filter>
+   <radialGradient id="vig${id}" cx="50%" cy="45%" r="72%"><stop offset="55%" stop-color="#000" stop-opacity="0"/><stop offset="100%" stop-color="#000" stop-opacity=".55"/></radialGradient>
+   <clipPath id="clip${id}"><path id="sheetpath${id}" d="M14 18 L${w*.42} 10 L${w-16} 22 L${w-10} ${h*.55} L${w-22} ${h-14} L${w*.5} ${h-8} L12 ${h-18} L20 ${h*.45} Z"/></clipPath>
   </defs>`;
-  mk(svg,'rect',{x:0,y:0,width:w,height:h,fill:'var(--paper)'});
-  mk(svg,'rect',{x:0,y:0,width:w,height:h,filter:`url(#grain${svg.id})`,opacity:.55});
-  mk(svg,'rect',{x:0,y:0,width:w,height:h,fill:`url(#vig${svg.id})`});
-  return mk(svg,'g',{filter:`url(#rough${svg.id})`});
+  mk(svg,'rect',{x:0,y:0,width:w,height:h,fill:'#0a0a0a'});
+  const paper=mk(svg,'g',{filter:`url(#torn${id})`});
+  const pg=mk(paper,'g',{'clip-path':`url(#clip${id})`});
+  mk(pg,'rect',{x:0,y:0,width:w,height:h,fill:'var(--paper)'});
+  mk(pg,'rect',{x:0,y:0,width:w,height:h,filter:`url(#wash${id})`,opacity:.55});
+  mk(pg,'rect',{x:0,y:0,width:w,height:h,filter:`url(#grain${id})`,opacity:.5});
+  mk(pg,'rect',{x:0,y:0,width:w,height:h,fill:`url(#vig${id})`});
+  // fałdy papieru
+  mk(pg,'path',{d:`M${w*.5} 0 L${w*.49} ${h}`,stroke:'#000','stroke-width':1.2,opacity:.12});
+  mk(pg,'path',{d:`M0 ${h*.5} L${w} ${h*.52}`,stroke:'#000','stroke-width':1.2,opacity:.1});
+  return mk(svg,'g',{filter:`url(#rough${id})`});
+}
+// góry malowane tuszem – ozdoba w tle, z dala od punktów
+function mountains(g,w,h,avoid,seed,n){
+  const r=rng(seed),mg=mk(g,'g',{opacity:.62});
+  let placed=0,tries=0;
+  while(placed<n&&tries<n*30){tries++;
+    const x=30+r()*(w-60),y=40+r()*(h-90),s=9+r()*20;
+    if(avoid.some(a=>Math.hypot(a.x-x,a.y-y)<(a.r||70)))continue;
+    placed++;
+    mk(mg,'path',{d:`M${x-s} ${y} L${x-s*.15} ${y-s*1.15} L${x+s*.9} ${y}`,fill:'none',stroke:'var(--char)','stroke-width':1.8,'stroke-linejoin':'round'});
+    mk(mg,'path',{d:`M${x-s*.15} ${y-s*1.15} L${x+s*.9} ${y} L${x+s*.1} ${y} Z`,fill:'var(--char)',opacity:.75});
+    for(let k=1;k<4;k++)mk(mg,'path',{d:`M${x-s*.15-k*s*.22} ${y-s*1.15+k*s*.3} l${s*.18} ${s*.12}`,stroke:'var(--char)','stroke-width':1.2,opacity:.7});
+  }
+}
+// etykieta jak w grze: jasny prostokąt, wersaliki
+function tag(parent,x,y,text,anchor,cls){
+  const g=mk(parent,'g',{class:'lab'+(cls?' '+cls:'')});
+  const rc=mk(g,'rect',{});
+  const t=mk(g,'text',{x,y,'text-anchor':anchor||'middle'});t.textContent=text.toUpperCase();
+  let b;try{b=t.getBBox()}catch(e){}
+  if(!b||!b.width){const fs=cls==='s'?11.5:cls==='xl'?30:15,wd=text.length*fs*.62;b={x:anchor==='end'?x-wd:anchor==='start'?x:x-wd/2,y:y-fs*.8,width:wd,height:fs}}
+  const px=cls==='xl'?14:7,py=cls==='xl'?6:3;
+  rc.setAttribute('x',b.x-px);rc.setAttribute('y',b.y-py);rc.setAttribute('width',b.width+2*px);rc.setAttribute('height',b.height+2*py);
+  return g;
 }
 function sketchLine(g,A,B,cls,rail){
   const mx=(A.x+B.x)/2,my=(A.y+B.y)/2,dx=B.x-A.x,dy=B.y-A.y,L=Math.hypot(dx,dy)||1;
@@ -321,26 +364,29 @@ const map=document.getElementById('map');
 function matches(k){const r=R[k];if(filt==='dlc')return!!r.dlc;if(filt==='nv')return!visited[k];if(filt==='all')return true;return r.d===+filt}
 function draw(){
   const g=defs(map,1180,640);
+  const pts=Object.values(R).concat(Object.values(T));
+  // morze na południu (ciemna plama tuszu jak w grze)
+  mk(g,'path',{d:'M470 640 C500 600 540 612 560 590 C590 560 640 600 660 575 C690 545 740 590 790 572 C840 556 880 600 930 585 C980 570 1010 610 1060 596 C1100 585 1150 612 1180 600 L1180 640 Z',fill:'#0d0d0d',opacity:.9});
+  mountains(g,1180,640,pts.map(p=>({x:p.x,y:p.y,r:62})).concat([{x:1140,y:410,r:60},{x:900,y:610,r:90},{x:700,y:610,r:80}]),3,95);
   compass(g,1140,410);
-  const lt=mk(g,'text',{x:30,y:612,'font-family':'Kalam, cursive','font-size':22,fill:'var(--char-2)'});lt.textContent='Wielki Niedźwiedź';
   const on=new Set(),near=new Set();
   if(path)for(let i=0;i<path.length-1;i++)adj[path[i]].forEach(e=>{if(e.to===path[i+1])on.add(e.i)});
   else adj[sel].forEach(e=>{near.add(e.i);if(T[e.to])adj[e.to].forEach(f=>{if(R[f.to])near.add(f.i)})});
   E.forEach(([a,b,t,dl],i)=>sketchLine(g,P(a),P(b),(dl&&!isRail(a,b)?'dlc ':'')+(on.has(i)?'on':near.has(i)?'near':''),isRail(a,b)));
-  for(const k in T){const t=T[k],tg=mk(g,'g',{class:'tz'+(path&&path.includes(k)?' onpath':'')});
+  for(const k in T){const t=T[k],tg=mk(map,'g',{class:'tz'+(path&&path.includes(k)?' onpath':'')});
     mk(tg,'path',{d:`M${t.x} ${t.y-8} L${t.x+8} ${t.y} L${t.x} ${t.y+8} L${t.x-8} ${t.y} Z`});
-    const tx=mk(tg,'text',{x:t.x<120?t.x-8:t.x,y:t.up?t.y-14:t.y+24,'text-anchor':t.x<120?'start':'middle'});tx.textContent=t.n}
+    tag(tg,t.x<120?t.x-6:t.x,t.up?t.y-16:t.y+26,t.n,t.x<120?'start':'middle','s')}
   // glows pod szkicem (bez filtra drgań)
   for(const k in R){const r=R[k];
     const ng=mk(map,'g',{class:'node'+(k===sel?' sel':'')+(path&&path.includes(k)?' onpath':'')+(filt!=='all'&&!matches(k)?' dim':''),tabindex:0,role:'button','aria-label':r.n+' ('+r.en+')'});
     mk(ng,'circle',{cx:r.x,cy:r.y,r:24,class:'glow',filter:`url(#blur${map.id})`});
     const rg=mk(ng,'g',{filter:`url(#rough${map.id})`});
-    mk(rg,'circle',{cx:r.x,cy:r.y,r:14,fill:'var(--paper)',stroke:'var(--char)','stroke-width':2.6});
-    mk(rg,'circle',{cx:r.x,cy:r.y,r:8,fill:DC[r.d]});
+    mk(rg,'circle',{cx:r.x,cy:r.y,r:12,fill:'var(--tag)',stroke:'var(--char)','stroke-width':2.6});
+    mk(rg,'circle',{cx:r.x,cy:r.y,r:6.5,fill:DC[r.d]});
     if(visited[k]){const c=mk(ng,'text',{x:r.x+13,y:r.y-12,class:'tick'});c.textContent='✓'}
     const lp=r.lp||(r.y<110?'up':'down');let anchor=r.x<120?'start':r.x>1000?'end':'middle',lx=r.x<120?r.x-14:r.x>1000?r.x+14:r.x,ly=lp==='up'?r.y-24:r.y+38;
     if(lp==='l'){anchor='end';lx=r.x-22;ly=r.y+6}if(lp==='r'){anchor='start';lx=r.x+22;ly=r.y+6}
-    const tx=mk(ng,'text',{x:lx,y:ly,'text-anchor':anchor,class:'n'});tx.textContent=r.n;
+    tag(ng,lx,ly,r.n,anchor);
     ng.addEventListener('click',()=>select(k));
     ng.addEventListener('dblclick',()=>openRegion(k));
     ng.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select(k)}});
@@ -386,10 +432,10 @@ const SYMN={shelter:'schronienie',res:'zasoby',danger:'niebezpieczeństwo',note:
 function drawRegion(){
   const k=cur,r=R[k];
   const g=defs(rmap,1000,640);
-  mk(g,'rect',{x:24,y:24,width:952,height:592,fill:'none',stroke:'var(--char)','stroke-width':1.4,opacity:.55});
+  mountains(g,1000,640,[{x:500,y:310,r:230},{x:930,y:90,r:70}],k.charCodeAt(0)*31+k.charCodeAt(1),46);
   compass(g,930,90);
-  const tt=mk(rmap,'text',{x:500,y:300,'text-anchor':'middle',class:'lbl-big','font-size':44,'font-weight':700,opacity:.85});tt.textContent=r.n;
-  const te=mk(rmap,'text',{x:500,y:332,'text-anchor':'middle',class:'lbl-big','font-size':18,fill:'var(--char-2)'});te.textContent=r.en;
+  tag(rmap,500,300,r.n,'middle','xl');
+  const te=mk(rmap,'text',{x:500,y:342,'text-anchor':'middle',class:'lbl-big','font-size':15,'letter-spacing':'.18em',fill:'var(--char-2)'});te.textContent=r.en.toUpperCase();
   const pr=pins[k]||[];
   if(!pr.length){const h=mk(rmap,'text',{x:500,y:380,'text-anchor':'middle',class:'lbl-big','font-size':16,fill:'var(--char-2)'});h.textContent='Kliknij na arkuszu, aby postawić pinezkę – narysuj własną mapę jak węglem w grze.'}
   // wyjścia
@@ -405,12 +451,12 @@ function drawRegion(){
     mk(lg,'path',{d:`M${ex-ah*Math.cos(ang-0.5)} ${ey-ah*Math.sin(ang-0.5)} L${ex} ${ey} L${ex-ah*Math.cos(ang+0.5)} ${ey-ah*Math.sin(ang+0.5)}`,stroke:'var(--char)','stroke-width':2.6,fill:'none'});
     const dests=R[e.to]?[e.to]:adj[e.to].map(f=>f.to).filter(x=>x!==k&&R[x]);
     const anchor=dx>0.35?'end':dx<-0.35?'start':'middle';
-    const lx=ix-dx*8,ly0=iy-dy*8+(dy<-0.3?-6:dy>0.3?-((dests.length+ (T[e.to]?1:0))*20)+6:-8);
+    const lines=dests.length+(T[e.to]?1:0),lx=ix-dx*12,ly0=iy-dy*10+(dy<-0.3?-4:dy>0.3?-(lines*24)+14:-((lines-1)*12));
     let ly=ly0;
-    if(T[e.to]){const v=mk(eg,'text',{x:lx,y:ly,'text-anchor':anchor,class:'via'});v.textContent='◇ '+T[e.to].n;ly+=20}
-    dests.forEach(d=>{const tx=mk(eg,'text',{x:lx,y:ly,'text-anchor':anchor,tabindex:0,role:'link'});tx.textContent='→ '+R[d].n;
-      tx.addEventListener('click',ev=>{ev.stopPropagation();openRegion(d)});
-      tx.addEventListener('keydown',ev=>{if(ev.key==='Enter')openRegion(d)});ly+=20});
+    if(T[e.to]){tag(eg,lx,ly,'◇ '+T[e.to].n,anchor,'via');ly+=24}
+    dests.forEach(d=>{const tl=tag(eg,lx,ly,'→ '+R[d].n,anchor);tl.setAttribute('tabindex',0);tl.setAttribute('role','link');
+      tl.addEventListener('click',ev=>{ev.stopPropagation();openRegion(d)});
+      tl.addEventListener('keydown',ev=>{if(ev.key==='Enter')openRegion(d)});ly+=24});
   });
   // pinezki
   pr.forEach((p,i)=>{const pg=mk(rmap,'g',{class:'pin'});
@@ -499,6 +545,7 @@ q.oninput=renderGrid;
 })();
 
 renderGrid();route('init');showView();
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{cur?drawRegion():draw()});
 </script>
 </body>
 </html>
