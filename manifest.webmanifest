@@ -1,0 +1,17 @@
+{
+  "name": "Wielki Niedźwiedź – mapy The Long Dark",
+  "short_name": "TLD mapy",
+  "description": "Interaktywne mapy regionów The Long Dark po polsku.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b1419",
+  "theme_color": "#0b1419",
+  "lang": "pl",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
+    {"src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml"}
+  ]
+}

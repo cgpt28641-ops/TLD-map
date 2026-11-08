@@ -3,606 +3,114 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Wielki Niedźwiedź – mapa</title>
-<meta name="description" content="Mapa regionów The Long Dark w stylu mapy rysowanej węglem: połączenia, planer trasy, własne pinezki i notatki.">
+<title>Wielki Niedźwiedź – mapy</title>
+<meta name="description" content="Interaktywne mapy regionów The Long Dark: przybliżanie, porównanie Pilgrim i Interloper, pinezki, trasy, mgła wojny i planer przejść między regionami.">
+<meta name="theme-color" content="#0b1419">
+<meta property="og:title" content="Wielki Niedźwiedź – mapy The Long Dark">
+<meta property="og:description" content="Interaktywne mapy wszystkich regionów The Long Dark po polsku.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500&family=Kalam:wght@300;400;700&family=Barlow:wght@400;500;600&display=swap">
-<style>
-/* Układ: nocne niebo z padającym śniegiem; mapa jako szkic węglem na papierze; panele jak dziennik z menu gry */
-:root{
-  --night:#0b1419; --night-2:#132530; --aurora:#2f6f6a;
-  --frost:#dfe8ea; --frost-2:#9fb3b9; --hair:rgba(223,232,234,.16); --glass:rgba(9,17,22,.74);
-  --ember:#e89a45; --ember-deep:#b8642a;
-  --paper:#dcdad4; --paper-2:#c9c6be; --char:#141312; --char-2:#45423e; --tag:#ecebe6;
-  --easy:#5f6d3b; --mid:#a5772b; --hard:#8c3524;
-  --ui:"Oswald","Arial Narrow",Arial,sans-serif;
-  --hand:"Kalam","Segoe Print","Comic Sans MS",cursive;
-  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
-  color-scheme:dark;
-}
-*{box-sizing:border-box}
-html{background:var(--night);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-body{margin:0;min-height:100vh;color:var(--frost);font:15px/1.55 var(--body);
-  background:
-    radial-gradient(120% 60% at 70% -10%, rgba(47,111,106,.45), transparent 60%),
-    radial-gradient(90% 50% at 10% 0%, rgba(40,70,95,.5), transparent 70%),
-    linear-gradient(180deg,var(--night-2) 0%,var(--night) 55%,#070d10 100%) fixed;}
-[hidden]{display:none!important}
-#snow{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
-.wrap{position:relative;z-index:1;max-width:1260px;margin:0 auto;padding-block:26px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:30px}
-header{display:grid;gap:4px;justify-items:start}
-.kicker{font:400 12px var(--ui);letter-spacing:.42em;text-transform:uppercase;color:var(--frost-2)}
-h1{margin:0;font:300 clamp(34px,6.5vw,64px)/1 var(--ui);letter-spacing:.16em;text-transform:uppercase;text-wrap:balance;text-shadow:0 2px 24px rgba(0,0,0,.6)}
-.sub{font:300 14px var(--ui);letter-spacing:.24em;text-transform:uppercase;color:var(--ember)}
-h2{margin:0 0 14px;font:400 20px var(--ui);letter-spacing:.22em;text-transform:uppercase;color:var(--frost)}
-h2::after{content:"";display:block;width:56px;height:1px;background:var(--ember);margin-top:8px}
-.btn{font:400 13px var(--ui);letter-spacing:.16em;text-transform:uppercase;display:inline-flex;align-items:center;gap:8px;padding:9px 14px;background:transparent;color:var(--frost);border:1px solid var(--hair);border-radius:2px;cursor:pointer;text-decoration:none}
-.btn:hover{border-color:var(--ember);color:var(--ember)}
-.btn.primary{border-color:var(--ember);color:var(--ember)}
-.btn.primary:hover{background:var(--ember);color:var(--night)}
-.btn[aria-pressed="true"]{background:var(--frost);color:var(--night);border-color:var(--frost)}
-:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
-
-.main{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:20px;align-items:start}
-@media (max-width:920px){.main{grid-template-columns:1fr}}
-.sheet{position:relative;border-radius:3px;box-shadow:0 18px 50px rgba(0,0,0,.6);overflow:hidden;min-width:0;background:#0a0a0a}
-.sheetscroll{overflow-x:auto}
-.sheetscroll svg{display:block;width:100%;min-width:740px;height:auto}
-.legend{display:flex;flex-wrap:wrap;gap:6px 18px;padding:10px 14px;background:#0a0a0a;color:var(--frost-2);font:400 12px var(--ui);letter-spacing:.12em;text-transform:uppercase}
-.legend span{display:inline-flex;align-items:center;gap:6px}
-.dot{width:11px;height:11px;border-radius:50%;display:inline-block;border:2px solid var(--frost)}
-
-/* elementy SVG */
-.edge{fill:none;stroke:var(--char);stroke-linecap:round}
-.edge.a{stroke-width:2.4;opacity:.78}.edge.b{stroke-width:1;opacity:.45}
-.edge.dlc{stroke-dasharray:7 6}
-.edge.near{opacity:1;stroke-width:3}
-.edge.on{stroke:var(--ember-deep);opacity:1;stroke-width:4.5}
-.node{cursor:pointer}
-.node text,.tz text,.ex text,.lbl-big{font-family:var(--ui);fill:var(--char)}
-.lab rect{fill:var(--tag)}
-.lab text{font:500 15px var(--ui);letter-spacing:.07em;fill:var(--char)}
-.lab.s text{font-size:11.5px;letter-spacing:.08em}
-.lab.xl text{font-size:30px;letter-spacing:.1em}
-.node:hover .lab rect,.node.sel .lab rect{fill:#fff}
-.node.sel .lab text,.node.onpath .lab text{fill:#000}
-.tz.onpath .lab rect{fill:var(--ember)}
-.node text.n{font-size:20px;font-weight:700}
-.node.dim{opacity:.22}
-.node .glow{fill:var(--ember);opacity:0}
-.node.sel .glow,.node.onpath .glow{opacity:.75}
-.node .tick{font-size:15px;font-weight:700;fill:var(--char)}
-.tz path{fill:var(--tag);stroke:var(--char);stroke-width:1.8}
-.tz.onpath path{fill:var(--ember)}
-.ex{cursor:pointer}
-.ex .lab text{font-size:13px}
-.ex .lab:hover rect{fill:var(--ember)}
-.ex .lab.via rect{fill:transparent}.ex .lab.via text{fill:var(--char);font-size:12px}
-.pin{cursor:pointer}
-.pin text{font:500 14px var(--ui);letter-spacing:.04em;fill:var(--char)}
-
-.panel{background:var(--glass);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid var(--hair);border-radius:3px;padding:20px;display:grid;gap:16px;min-width:0}
-.panel h3{margin:0;font:300 30px/1.05 var(--ui);letter-spacing:.08em;text-transform:uppercase}
-.en{font:400 13px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--frost-2);margin-top:4px}
-.tags{display:flex;flex-wrap:wrap;gap:6px}
-.tag{font:400 12px var(--ui);letter-spacing:.14em;text-transform:uppercase;padding:3px 9px;border:1px solid currentColor;border-radius:2px}
-.t1{color:#a9bd73}.t2{color:#e0b25c}.t3{color:#e07a62}.tdlc{color:var(--ember)}.tbase{color:var(--frost-2)}
-.panel p{margin:0;color:var(--frost-2)}
-.lbl{font:400 11px var(--ui);letter-spacing:.24em;text-transform:uppercase;color:var(--frost-2);margin:0 0 8px}
-ul.conns{list-style:none;margin:0;padding:0;display:grid;gap:9px}
-ul.conns li{display:grid;gap:1px;padding-left:12px;border-left:1px solid var(--ember)}
-ul.conns button{all:unset;cursor:pointer;font:400 15px var(--ui);letter-spacing:.06em;text-transform:uppercase}
-ul.conns button:hover{color:var(--ember)}
-ul.conns small{color:var(--frost-2);font-size:13px}
-.row{display:flex;flex-wrap:wrap;gap:8px}
-.check{display:flex;align-items:center;gap:10px;cursor:pointer}
-.check input{width:18px;height:18px;accent-color:var(--ember)}
-ul.places{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-ul.places label{display:grid;grid-template-columns:18px 1fr;gap:10px;align-items:start;cursor:pointer}
-ul.places input{width:16px;height:16px;margin-top:3px;accent-color:var(--ember)}
-ul.places small{display:block;color:var(--frost-2);font-size:13px}
-ul.places .done{text-decoration:line-through;text-decoration-color:var(--ember);color:var(--frost-2)}
-ul.pins{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-ul.pins li{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:14px}
-ul.pins button{all:unset;cursor:pointer;color:var(--frost-2);font:400 12px var(--ui);letter-spacing:.12em;text-transform:uppercase}
-ul.pins button:hover{color:var(--ember)}
-.tools{display:flex;flex-wrap:wrap;gap:6px}
-input[type=text],input[type=search],select{font:500 15px var(--body);padding:9px 11px;background:rgba(0,0,0,.35);color:var(--frost);border:1px solid var(--hair);border-radius:2px;min-width:0;max-width:100%}
-input[type=text]{width:100%}
-.hint{font-size:13px;color:var(--frost-2)}
-
-.route{background:var(--glass);border:1px solid var(--hair);border-radius:3px;padding:20px;display:grid;gap:14px}
-.route form{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
-.route label{display:grid;gap:5px;font:400 11px var(--ui);letter-spacing:.24em;text-transform:uppercase;color:var(--frost-2)}
-.steps{display:flex;flex-wrap:wrap;align-items:center;gap:8px 6px}
-.step{font:400 14px var(--ui);letter-spacing:.1em;text-transform:uppercase;padding:6px 11px;border:1px solid var(--frost);border-radius:2px}
-.step.t{border-style:dashed;border-color:var(--frost-2);color:var(--frost-2);text-transform:none;letter-spacing:.02em;font-family:var(--body)}
-.arrow{color:var(--ember)}
-.note{font-size:14px;color:var(--frost-2)}
-.note b{color:var(--frost);font-weight:600}
-
-.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-.card{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-rows:auto auto 1fr;gap:6px;padding:16px;background:var(--glass);border:1px solid var(--hair);border-radius:3px;position:relative}
-.card::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:2px;background:var(--c)}
-.card:hover{border-color:var(--ember)}
-.card:focus-visible{outline:2px solid var(--ember)}
-.card h4{margin:0;font:400 19px var(--ui);letter-spacing:.08em;text-transform:uppercase;display:flex;justify-content:space-between;gap:8px}
-.card h4 .v{font-size:12px;color:var(--ember);letter-spacing:.14em;align-self:center;white-space:nowrap}
-.card .meta{font:400 12px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--frost-2)}
-.card p{margin:0;font-size:14px;color:var(--frost-2)}
-.empty{color:var(--frost-2)}
-footer{font-size:13px;color:var(--frost-2);border-top:1px solid var(--hair);padding-top:14px}
-.back{justify-self:start}
-@media (prefers-reduced-motion:no-preference){.node .glow{transition:opacity .25s}.edge{transition:stroke .2s,opacity .2s}}
-
-.vbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
-.seg{display:flex;gap:0}
-.seg .btn{border-radius:0}.seg .btn+.btn{border-left:0}
-.seg .btn[aria-pressed="true"]{background:var(--frost);color:var(--night);border-color:var(--frost)}
-.viewer{position:relative;height:min(78vh,780px);min-height:360px;background:#0a0a0a;overflow:hidden;touch-action:none;cursor:grab;border-radius:3px;box-shadow:0 18px 50px rgba(0,0,0,.6);user-select:none}
-.viewer.drag{cursor:grabbing}.viewer.pinmode{cursor:crosshair}
-.layer{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
-.layer img{display:block;max-width:none;width:auto;height:auto;pointer-events:none}
-.vstatus{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;font:400 14px var(--ui);letter-spacing:.18em;text-transform:uppercase;color:var(--frost-2);pointer-events:none}
-.vctrl{position:absolute;right:12px;top:12px;display:grid;gap:6px}
-.vctrl .btn{width:40px;height:40px;justify-content:center;padding:0;font-size:20px;background:rgba(9,17,22,.8)}
-.vhint{position:absolute;left:12px;bottom:12px;font:400 11px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--frost);background:rgba(9,17,22,.75);padding:6px 10px;border-radius:2px;pointer-events:none}
-.mpin{position:absolute;left:0;top:0;transform-origin:0 0;pointer-events:none}
-.mpin span{position:absolute;left:0;top:0;transform:translate(-50%,-50%);display:flex;align-items:center;gap:6px;white-space:nowrap}
-.mpin i{font-style:normal;width:26px;height:26px;display:grid;place-items:center;border-radius:50%;background:var(--ember);color:#111;font:600 15px var(--ui);box-shadow:0 0 0 2px #111,0 2px 8px rgba(0,0,0,.6)}
-.mpin.danger i{background:#e07a62}.mpin.res i{background:#a9bd73}.mpin.note i{background:var(--frost)}
-.mpin b{font:500 13px var(--ui);letter-spacing:.06em;text-transform:uppercase;background:var(--tag);color:#141312;padding:2px 7px}
-.credit{margin:0;font-size:12.5px;color:var(--frost-2)}
-.credit a{color:var(--frost)}
-.extras{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.tz{cursor:pointer}
-</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600&family=Barlow:wght@400;500;600&display=swap">
+<link rel="preconnect" href="https://images.steamusercontent.com" crossorigin>
+<link rel="stylesheet" href="assets/app.css">
 </head>
 <body>
-<canvas id="snow" aria-hidden="true"></canvas>
-<div class="wrap">
-  <header>
-    <span class="kicker">The Long Dark</span>
-    <h1>Wielki Niedźwiedź</h1>
-    <span class="sub" id="subt">Mapa wyspy</span>
+<div class="app" id="app">
+
+  <header class="top">
+    <button class="ib only-m" id="openSide" aria-label="Lista map">☰</button>
+    <div class="brand"><span class="k">The Long Dark</span><span class="b">Wielki Niedźwiedź</span></div>
+    <button class="search" id="openSearch" aria-label="Szukaj">
+      <span>Szukaj mapy lub miejsca…</span><kbd>Ctrl K</kbd>
+    </button>
+    <div class="seg" role="group" aria-label="Wersja mapy" id="varSeg">
+      <button data-v="pilgrim"><span class="lf">Pilgrim–Stalker</span><span class="sf">Pilgrim</span></button>
+      <button data-v="interloper"><span class="lf">Interloper–Misery</span><span class="sf">Interloper</span></button>
+      <button data-v="compare">Porównaj</button>
+    </div>
+    <div class="prog" id="prog" title="Odwiedzone regiony"></div>
+    <div class="menuwrap">
+      <button class="ib" id="menuBtn" aria-haspopup="true" aria-expanded="false" aria-label="Menu">⋯</button>
+      <div class="menu" id="menu" hidden>
+        <button data-act="export">Eksportuj moje dane (JSON)</button>
+        <label class="mi">Importuj dane…<input type="file" id="importFile" accept="application/json" hidden></label>
+        <button data-act="keys">Skróty klawiszowe</button>
+        <button data-act="about">O stronie i autorach map</button>
+        <hr>
+        <button data-act="reset" class="danger">Usuń moje dane…</button>
+      </div>
+    </div>
+    <button class="ib only-m" id="openInsp" aria-label="Szczegóły">ⓘ</button>
   </header>
 
-  <!-- WIDOK WYSPY -->
-  <div class="extras" id="extras">
-    <span class="lbl" style="margin:0">Mapy szczegółowe:</span>
-    <button class="btn" data-open="world">Cały świat</button>
-    <button class="btn" data-open="conn">Połączenia regionów</button>
-    <button class="btn" data-open="lm">Kopalnia Langston</button>
-    <span class="hint">albo kliknij region lub strefę na szkicu poniżej</span>
-  </div>
-  <div id="vIsland" class="main">
-    <div class="sheet">
-      <div class="sheetscroll"><svg id="map" viewBox="0 0 1180 640" role="img" aria-label="Szkic połączeń regionów Wielkiego Niedźwiedzia"></svg></div>
-      <div class="legend">
-        <span><i class="dot" style="background:var(--easy)"></i>łatwy</span>
-        <span><i class="dot" style="background:var(--mid)"></i>średni</span>
-        <span><i class="dot" style="background:var(--hard)"></i>trudny</span>
-        <span>◇ strefa przejściowa</span>
-        <span>┼┼┼ tory</span><span>- - - wymaga DLC Far Territory</span>
-        <span>✓ odwiedzony</span>
-        <span>szkic, nie w skali</span>
+  <aside class="side" id="side">
+    <div class="nav">
+      <svg id="navmap" viewBox="0 0 1180 640" role="img" aria-label="Nawigator – szkic wyspy"></svg>
+    </div>
+    <div class="list" id="list"></div>
+  </aside>
+
+  <main class="stage" id="stage">
+    <div class="toolopts" id="toolopts"></div>
+    <div class="viewer" id="viewer" tabindex="0" aria-label="Mapa">
+      <div class="layer" id="layer">
+        <img id="imgA" alt="" draggable="false">
+        <img id="imgB" alt="" draggable="false" hidden>
+        <canvas id="fog" hidden></canvas>
+        <svg id="draw" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div id="pinsL"></div>
       </div>
-    </div>
-    <aside class="panel" id="panel" aria-live="polite"></aside>
-  </div>
+      <div class="sketchwrap" id="sketchWrap" hidden><svg id="sketch" viewBox="0 0 1180 640" role="img" aria-label="Szkic połączeń regionów"></svg></div>
+      <div class="cmp" id="cmp" hidden><span class="l">Pilgrim–Stalker</span><span class="h" id="cmpHandle" tabindex="0" role="slider" aria-label="Suwak porównania" aria-valuemin="0" aria-valuemax="100"></span><span class="r">Interloper–Misery</span></div>
+      <div class="status" id="status"></div>
 
-  <!-- WIDOK REGIONU -->
-  <div id="vRegion" hidden>
-    <div class="main">
-      <div style="display:grid;gap:12px;min-width:0">
-        <div class="vbar">
-          <button class="btn back" id="back">← Mapa wyspy</button>
-          <div class="seg" role="group" aria-label="Wersja mapy">
-            <button class="btn" data-v="pilgrim">Pilgrim – Stalker</button>
-            <button class="btn" data-v="interloper">Interloper – Misery</button>
-          </div>
-          <div class="seg" role="group" aria-label="Warstwa" id="layerSeg" hidden>
-            <button class="btn" data-l="map">Mapa</button>
-            <button class="btn" data-l="loc">Lokacje opowieści</button>
-          </div>
-        </div>
-        <div class="viewer" id="viewer" aria-label="Interaktywna mapa regionu">
-          <div class="layer" id="layer"><img id="mimg" alt="" draggable="false"><div id="pinsLayer"></div></div>
-          <div class="vstatus" id="vstatus">Wczytywanie mapy…</div>
-          <div class="vctrl">
-            <button class="btn" id="zin" aria-label="Przybliż">+</button>
-            <button class="btn" id="zout" aria-label="Oddal">−</button>
-            <button class="btn" id="zfit" aria-label="Dopasuj">⤢</button>
-          </div>
-          <div class="vhint" id="vhint">Przeciągnij, aby przesunąć · kółko lub szczypanie, aby przybliżyć</div>
-        </div>
-        <p class="credit" id="credit"></p>
+      <div class="tools" role="toolbar" aria-label="Narzędzia">
+        <button data-tool="pan" title="Przesuwanie (V)"><svg viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M12 2l-3 3M12 2l3 3M12 22l-3-3M12 22l3-3M2 12l3-3M2 12l3 3M22 12l-3-3M22 12l-3 3"/></svg><span>Przesuń</span></button>
+        <button data-tool="pin" title="Pinezka (P)"><svg viewBox="0 0 24 24"><path d="M12 22s-7-7.5-7-12a7 7 0 0 1 14 0c0 4.5-7 12-7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Pinezka</span></button>
+        <button data-tool="route" title="Trasa (R)"><svg viewBox="0 0 24 24"><path d="M4 19c4 0 3-7 8-7s4-7 8-7"/><circle cx="4" cy="19" r="2"/><circle cx="20" cy="5" r="2"/></svg><span>Trasa</span></button>
+        <button data-tool="fog" title="Mgła wojny (F)"><svg viewBox="0 0 24 24"><path d="M3 9h13M6 13h15M3 17h12"/><circle cx="18" cy="8" r="3"/></svg><span>Mgła</span></button>
+        <button data-tool="erase" title="Gumka (E)"><svg viewBox="0 0 24 24"><path d="M4 16l9-9 6 6-6 6H8z"/><path d="M13 19h7"/></svg><span>Gumka</span></button>
       </div>
-      <aside class="panel" id="rpanel"></aside>
+
+      <div class="zoom">
+        <button id="zin" title="Przybliż (+)" aria-label="Przybliż">+</button>
+        <button id="zout" title="Oddal (−)" aria-label="Oddal">−</button>
+        <button id="zfit" title="Dopasuj (0)" aria-label="Dopasuj">⤢</button>
+        <button id="zfull" title="Pełny ekran" aria-label="Pełny ekran">⛶</button>
+      </div>
+      <canvas class="mini" id="mini" width="200" height="140" aria-label="Minimapa"></canvas>
+      <div class="foot"><span id="zread">100%</span><span id="credit"></span></div>
     </div>
-  </div>
+  </main>
 
-  <section class="route" aria-labelledby="rh" id="routeSec">
-    <h2 id="rh" style="margin:0">Planer trasy</h2>
-    <form id="rf" onsubmit="return false">
-      <label for="from">Skąd<select id="from"></select></label>
-      <label for="to">Dokąd<select id="to"></select></label>
-      <button class="btn" type="button" id="swap">⇄ Zamień</button>
-    </form>
-    <div id="rout"></div>
-  </section>
-
-  <section aria-labelledby="lh" id="listSec">
-    <h2 id="lh">Regiony</h2>
-    <div class="filters" role="group" aria-label="Filtry">
-      <button class="btn" data-f="all" aria-pressed="true">Wszystkie</button>
-      <button class="btn" data-f="1" aria-pressed="false">Łatwe</button>
-      <button class="btn" data-f="2" aria-pressed="false">Średnie</button>
-      <button class="btn" data-f="3" aria-pressed="false">Trudne</button>
-      <button class="btn" data-f="dlc" aria-pressed="false">Far Territory</button>
-      <button class="btn" data-f="nv" aria-pressed="false">Nieodwiedzone</button>
-      <input type="search" id="q" placeholder="Szukaj (PL lub EN)…" aria-label="Szukaj regionu">
+  <aside class="insp" id="insp">
+    <div class="tabs" role="tablist">
+      <button role="tab" data-tab="info" aria-selected="true">Informacje</button>
+      <button role="tab" data-tab="notes" aria-selected="false">Moje notatki</button>
+      <button role="tab" data-tab="plan" aria-selected="false">Planer trasy</button>
     </div>
-    <div class="grid" id="grid"></div>
-  </section>
-
-  <footer>Polskie nazwy regionów to tłumaczenia robocze – pod każdą jest oryginalna nazwa z gry. Odwiedzone regiony, odhaczone miejsca i pinezki zapisują się tylko w tej przeglądarce.</footer>
+    <div class="tabbody" id="tabbody"></div>
+  </aside>
+  <div class="scrim" id="scrim" hidden></div>
 </div>
 
+<div class="palette" id="palette" hidden>
+  <div class="pbox" role="dialog" aria-modal="true" aria-label="Szukaj">
+    <input id="pq" type="search" placeholder="Region, strefa, miejsce (PL lub EN)…" autocomplete="off" aria-label="Szukaj">
+    <ul id="pres" role="listbox"></ul>
+    <div class="phint"><kbd>↑</kbd><kbd>↓</kbd> wybór · <kbd>Enter</kbd> otwórz · <kbd>Esc</kbd> zamknij</div>
+  </div>
+</div>
+
+<div class="modal" id="modal" hidden><div class="mbox" role="dialog" aria-modal="true"><div id="mbody"></div><div class="mact"><button class="btn" id="mclose">Zamknij</button></div></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <script src="data/maps-fallback.js"></script>
-<script>
-const DN={1:'łatwy',2:'średni',3:'trudny'};
-const DC={1:'var(--easy)',2:'var(--mid)',3:'var(--hard)'};
-const TC={1:'#a9bd73',2:'#e0b25c',3:'#e07a62'};
-const R={
- ml:{n:'Jezioro Tajemnic',en:'Mystery Lake',lp:'up',d:1,x:614,y:318,t:'Śródlądowe jezioro i linia kolejowa, chatki i łowienie ryb. Najlepszy start – środek wyspy, tory jako punkt orientacyjny.',
-   k:[['Camp Office','biuro obozu nad jeziorem'],['Trapper\'s Homestead','chata trapera, przejście do Milton'],['Carter Hydro Dam','tama, droga do Krętej Rzeki'],['Forestry Lookout','wieża obserwacyjna na wzgórzu'],['Lake Cabins','chatki nad jeziorem'],['Alan\'s Cave','jaskinia przy torach']]},
- ch:{n:'Przybrzeżna Autostrada',en:'Coastal Highway',d:2,x:882,y:491,t:'Zamarznięta zatoka i nadbrzeżna droga z osadą i obozem rybackim.',
-   k:[['Quonset Garage','stacja benzynowa i warsztat'],['Coastal Townsite','osada przy drodze'],['Fishing Camp','obóz rybacki na lodzie'],['Jackrabbit Island','wyspa na zatoce'],['Cinder Hills Coal Mine','kopalnia – przejście do Wesołej Doliny']]},
- pv:{n:'Wesoła Dolina',en:'Pleasant Valley',lp:'r',d:3,x:880,y:286,t:'Otwarte pola i długie odsłonięte trasy – częste zamiecie. Trzymaj się dróg.',
-   k:[['Pleasant Valley Farmstead','duża farma w centrum'],['Thomson\'s Crossing','kościół i domy przy moście'],['Rural Crossroads','skrzyżowanie z budynkami'],['Signal Hill','wzgórze z wieżą radiową'],['Skeeter\'s Ridge','grzbiet z chatkami']]},
- dp:{n:'Pustkowie',en:'Desolation Point',lp:'down',d:2,x:1130,y:550,t:'Zwarte wybrzeże ze starym statkiem wielorybniczym, przetwórnią i kuźnią.',
-   k:[['The Riken','wrak statku wielorybniczego'],['Hibernia Processing','przetwórnia z kuźnią'],['Lonely Lighthouse','latarnia morska'],['Stone Church','kamienny kościół'],['Abandoned Mine No. 3','kopalnia – przejście na Przybrzeżną Autostradę']]},
- tw:{n:'Wilcza Góra',en:'Timberwolf Mountain',lp:'r',d:3,x:1017,y:150,t:'Wysoka góra z wejściem na szczyt, ostra pogoda i długie podejścia.',
-   k:[['Mountaineer\'s Hut','chata alpinisty w połowie drogi'],['Summit','szczyt z rozbitym samolotem'],['Crystal Lake','chatki nad jeziorem'],['Deer Clearing','polana – droga do Kanionu Popielnego'],['Foreman\'s Clearcut','wycinka – jaskinia do Blackrock']]},
- fm:{n:'Opuszczone Torfowisko',en:'Forlorn Muskeg',d:3,x:464,y:417,t:'Rozległe bagno przecięte torami, cienki lód i mało schronień.',
-   k:[['Old Spence Family Homestead','gospodarstwo Spence\'ów'],['Poacher\'s Camp','obóz kłusowników'],['Shortwave Tower','wieża krótkofalowa'],['Muskeg Overlook','punkt widokowy nad bagnem']]},
- br:{n:'Zniszczone Tory Kolejowe',en:'Broken Railroad',d:2,x:300,y:363,t:'Krótki region kolejowy z warsztatem kolejowym i domkiem myśliwskim. Brama do Far Territory.',
-   k:[['Maintenance Yard','warsztat kolejowy z kuźnią'],['Hunting Lodge','domek myśliwski'],['Far Range Branch Line','koniec torów – droga do Przełęczy Przeładunkowej']]},
- mt:{n:'Milton',en:'Mountain Town',lp:'l',al:'Górskie Miasteczko Mountain',d:1,x:451,y:198,t:'Region Mountain Town z miasteczkiem Milton w górskiej kotlinie. Mało drapieżników, dużo jedzenia i schronień.',
-   k:[['Milton (miasteczko)','domy, sklep, poczta i bank'],['Grey Mother\'s House','dom Szarej Matki'],['Orca Gas Station','stacja benzynowa'],['Paradise Meadows Farm','farma na obrzeżach'],['Spruce Falls','most – w pobliżu jaskinia do Doliny Spokojnej Rzeki']]},
- hr:{n:'Dolina Spokojnej Rzeki',en:'Hushed River Valley',d:3,x:460,y:60,t:'Odległa, wielopoziomowa dolina klifów, jaskiń i wodospadów. Prawie bez budynków – schronienia głównie w jaskiniach.',
-   k:[['Wodospady','wielopoziomowe zamarznięte wodospady'],['Jaskinie','główne schronienia regionu']]},
- bi:{n:'Ponura Zatoka',en:'Bleak Inlet',d:3,x:672,y:502,t:'Przemysłowe wybrzeże z konserwownią, stromy teren i stada timberwolfów.',
-   k:[['Cannery','konserwownia z warsztatem'],['Cannery Workers\' Area','domki pracowników konserwowni']]},
- ac:{n:'Kanion Popielny',en:'Ash Canyon',d:3,x:1069,y:60,t:'Głęboki kanion z płaskowyżami, mostami linowymi i niewieloma budynkami.',
-   k:[['Miner\'s Folly','stara kopalnia z chatkami'],['Angler\'s Den','chata wędkarza'],['Echo Ravine','wąwóz – droga na Wilczą Górę']]},
- bk:{n:'Blackrock',en:'Blackrock',lp:'l',d:2,x:914,y:69,t:'Pagórkowaty region z więzieniem, częstymi zamieciami i timberwolfami.',
-   k:[['Blackrock Penitentiary','więzienie'],['Blackrock (miasto)','zabudowania przy drodze'],['Keeper\'s Pass North','przejście do Wesołej Doliny']]},
- tp:{n:'Przełęcz Przeładunkowa',en:'Transfer Pass',lp:'up',d:2,x:170,y:290,dlc:1,t:'Spokojna stacja kolejowa – węzeł łączący dolną część wyspy z trzema regionami Far Territory.',
-   k:[['Stacja kolejowa','depo – węzeł regionu'],['Zawalony tunel','obejście na drodze do Rozdartej Przełęczy']]},
- fa:{n:'Opuszczone Lotnisko',en:'Forsaken Airfield',lp:'up',d:3,x:80,y:120,dlc:1,t:'Szeroka dolina z porzuconym lotniskiem i częstą mgłą glimmer. Tu zaczyna się pierwsza Opowieść.',
-   k:[['Control Tower','wieża kontrolna – start pierwszej Opowieści'],['Fallow Dugout','w pobliżu jaskinia do Strefy Skażenia i Rozdartej Przełęczy']]},
- zc:{n:'Strefa Skażenia',en:'Zone of Contamination',lp:'r',d:3,x:240,y:140,dlc:1,t:'Region kopalni odkrywkowej – strefy toksyczne i gazy kopalniane.',
-   k:[['Immutable Hesitation','tory – droga do Przełęczy Przeładunkowej'],['Enduring Waterfall','w pobliżu wspólna jaskinia przejściowa']]},
- sp:{n:'Rozdarta Przełęcz',en:'Sundered Pass',d:3,x:100,y:520,dlc:1,t:'Zimna przełęcz górska – stromy teren, lawiny, timberwolfy i kuguar.',
-   k:[['Stoki lawinowe','uważaj na lawiny'],['Droga za tunelem','wyjście do Przełęczy Przeładunkowej']]}
-};
-const T={
- rav:{n:'Przełęcz',en:'The Ravine',x:704,y:403},
- wr:{n:'Kręta Rzeka',en:'Winding River',x:771,y:362},
- crh:{n:'Zniszczona Autostrada',en:'Crumbling Highway',up:1,x:944,y:579},
- kp:{n:'Przełęcz Strażnika',en:"Keeper's Pass",x:900,y:180},
- fr:{n:'Bocznica Dalekiego Pasma',en:'Far Range Branch Line',up:1,x:240,y:345},
- cave:{n:'Wspólna jaskinia',en:'transition cave',x:40,y:330}
-};
-const E=[
- ['ml','fm','bezpośrednio, tunelem kolejowym'],
- ['ml','rav','przez Przełęcz'],['ch','rav','przez Przełęcz'],['bi','rav','przez Przełęcz'],
- ['ml','wr','przez tamę Carter Hydro'],['pv','wr','przez Krętą Rzekę'],
- ['ml','mt','jaskinią koło Trapper\'s Homestead'],
- ['ch','pv','przez kopalnię Cinder Hills'],
- ['ch','crh','przez Zniszczoną Autostradę'],['dp','crh','przez kopalnię nr 3'],
- ['pv','tw','wspinaczka po linie koło skrytki Preppera'],
- ['pv','kp','Keeper\'s Pass South'],['bk','kp','Keeper\'s Pass North'],
- ['tw','ac','Echo Ravine lub jaskinią na wschód od Deer Clearing'],
- ['tw','bk','jaskinią koło Foreman\'s Clearcut'],
- ['fm','br','bezpośrednio'],
- ['fm','mt','przez Marsh Ridge'],
- ['fm','bi','jaskinią przejściową'],
- ['mt','hr','jaskinią między Trailerem a Spruce Falls'],
- ['br','fr','torami do końca linii',1],['tp','fr','bocznicą kolejową',1],
- ['tp','fa','drogą górską',1],
- ['tp','zc','torami przy Immutable Hesitation',1],
- ['tp','sp','północną drogą za zawalonym tunelem',1],
- ['fa','cave','jaskinia na SE od Fallow Dugout',1],['zc','cave','jaskinia koło Enduring Waterfall',1],['sp','cave','wspólna jaskinia przejściowa',1]
-];
-const P=k=>R[k]||T[k];
-const RAIL=new Set(['ml|fm','fm|br','br|fr','tp|fr','ml|rav','ch|rav','tp|zc']);
-const isRail=(a,b)=>RAIL.has(a+'|'+b)||RAIL.has(b+'|'+a);
-const adj={};E.forEach(([a,b,t],i)=>{(adj[a]=adj[a]||[]).push({to:b,t,i});(adj[b]=adj[b]||[]).push({to:a,t,i})});
-
-const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
-const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
-let visited=load('tld-visited',{}),done=load('tld-done',{}),pins=load('tld-pins',{});
-let sel='ml',path=null,filt='all',tool='shelter',cur=null;
-
-function regionNeighbours(k){
-  const out=[];
-  (adj[k]||[]).forEach(e=>{
-    if(R[e.to])out.push({k:e.to,t:e.t,dlc:E[e.i][3]});
-    else adj[e.to].forEach(f=>{if(f.to!==k&&R[f.to])out.push({k:f.to,t:e.t+(T[e.to]?'':''),via:T[e.to].n,dlc:E[e.i][3]})});
-  });
-  return out;
-}
-
-const NS='http://www.w3.org/2000/svg';
-const mk=(p,t,a)=>{const el=document.createElementNS(NS,t);for(const k in a)el.setAttribute(k,a[k]);p.appendChild(el);return el};
-function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
-function defs(svg,w,h){
-  const id=svg.id;
-  svg.innerHTML=`<defs>
-   <filter id="rough${id}"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3.5"/></filter>
-   <filter id="torn${id}" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="4" seed="11"/><feDisplacementMap in="SourceGraphic" scale="16"/></filter>
-   <filter id="wash${id}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.006 0.012" numOctaves="4" seed="5" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0.08  0 0 0 0 0.08  0 0 0 0 0.08  0 0 0 -1.6 0.95"/></filter>
-   <filter id="grain${id}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0.1  0 0 0 0 0.1  0 0 0 0 0.1  0 0 0 0.5 0"/></filter>
-   <filter id="blur${id}"><feGaussianBlur stdDeviation="5"/></filter>
-   <filter id="soft${id}"><feGaussianBlur stdDeviation="2.2"/></filter>
-   <radialGradient id="vig${id}" cx="50%" cy="45%" r="72%"><stop offset="55%" stop-color="#000" stop-opacity="0"/><stop offset="100%" stop-color="#000" stop-opacity=".55"/></radialGradient>
-   <clipPath id="clip${id}"><path id="sheetpath${id}" d="M14 18 L${w*.42} 10 L${w-16} 22 L${w-10} ${h*.55} L${w-22} ${h-14} L${w*.5} ${h-8} L12 ${h-18} L20 ${h*.45} Z"/></clipPath>
-  </defs>`;
-  mk(svg,'rect',{x:0,y:0,width:w,height:h,fill:'#0a0a0a'});
-  const paper=mk(svg,'g',{filter:`url(#torn${id})`});
-  const pg=mk(paper,'g',{'clip-path':`url(#clip${id})`});
-  mk(pg,'rect',{x:0,y:0,width:w,height:h,fill:'var(--paper)'});
-  mk(pg,'rect',{x:0,y:0,width:w,height:h,filter:`url(#wash${id})`,opacity:.55});
-  mk(pg,'rect',{x:0,y:0,width:w,height:h,filter:`url(#grain${id})`,opacity:.5});
-  mk(pg,'rect',{x:0,y:0,width:w,height:h,fill:`url(#vig${id})`});
-  // fałdy papieru
-  mk(pg,'path',{d:`M${w*.5} 0 L${w*.49} ${h}`,stroke:'#000','stroke-width':1.2,opacity:.12});
-  mk(pg,'path',{d:`M0 ${h*.5} L${w} ${h*.52}`,stroke:'#000','stroke-width':1.2,opacity:.1});
-  return mk(svg,'g',{filter:`url(#rough${id})`});
-}
-// góry malowane tuszem – ozdoba w tle, z dala od punktów
-function mountains(g,w,h,avoid,seed,n){
-  const r=rng(seed),mg=mk(g,'g',{opacity:.62});
-  let placed=0,tries=0;
-  while(placed<n&&tries<n*30){tries++;
-    const x=30+r()*(w-60),y=40+r()*(h-90),s=9+r()*20;
-    if(avoid.some(a=>Math.hypot(a.x-x,a.y-y)<(a.r||70)))continue;
-    placed++;
-    mk(mg,'path',{d:`M${x-s} ${y} L${x-s*.15} ${y-s*1.15} L${x+s*.9} ${y}`,fill:'none',stroke:'var(--char)','stroke-width':1.8,'stroke-linejoin':'round'});
-    mk(mg,'path',{d:`M${x-s*.15} ${y-s*1.15} L${x+s*.9} ${y} L${x+s*.1} ${y} Z`,fill:'var(--char)',opacity:.75});
-    for(let k=1;k<4;k++)mk(mg,'path',{d:`M${x-s*.15-k*s*.22} ${y-s*1.15+k*s*.3} l${s*.18} ${s*.12}`,stroke:'var(--char)','stroke-width':1.2,opacity:.7});
-  }
-}
-// etykieta jak w grze: jasny prostokąt, wersaliki
-function tag(parent,x,y,text,anchor,cls){
-  const g=mk(parent,'g',{class:'lab'+(cls?' '+cls:'')});
-  const rc=mk(g,'rect',{});
-  const t=mk(g,'text',{x,y,'text-anchor':anchor||'middle'});t.textContent=text.toUpperCase();
-  let b;try{b=t.getBBox()}catch(e){}
-  if(!b||!b.width){const fs=cls==='s'?11.5:cls==='xl'?30:15,wd=text.length*fs*.62;b={x:anchor==='end'?x-wd:anchor==='start'?x:x-wd/2,y:y-fs*.8,width:wd,height:fs}}
-  const px=cls==='xl'?14:7,py=cls==='xl'?6:3;
-  rc.setAttribute('x',b.x-px);rc.setAttribute('y',b.y-py);rc.setAttribute('width',b.width+2*px);rc.setAttribute('height',b.height+2*py);
-  return g;
-}
-function sketchLine(g,A,B,cls,rail){
-  const mx=(A.x+B.x)/2,my=(A.y+B.y)/2,dx=B.x-A.x,dy=B.y-A.y,L=Math.hypot(dx,dy)||1;
-  const o=Math.min(18,L*.06),cx=mx-dy/L*o,cy=my+dx/L*o;
-  mk(g,'path',{d:`M${A.x} ${A.y} Q${cx} ${cy} ${B.x} ${B.y}`,class:'edge a '+cls});
-  mk(g,'path',{d:`M${A.x+1.5} ${A.y-1} Q${cx+3} ${cy-2} ${B.x-1} ${B.y+1.5}`,class:'edge b '+cls});
-  if(rail)mk(g,'path',{d:`M${A.x} ${A.y} Q${cx} ${cy} ${B.x} ${B.y}`,fill:'none',stroke:'var(--char)','stroke-width':10,'stroke-dasharray':'2 8',opacity:.75});
-}
-function compass(g,x,y){
-  mk(g,'path',{d:`M${x} ${y-34} L${x+8} ${y} L${x} ${y+34} L${x-8} ${y} Z`,fill:'none',stroke:'var(--char)','stroke-width':1.6});
-  mk(g,'path',{d:`M${x} ${y-34} L${x+8} ${y} L${x-8} ${y} Z`,fill:'var(--char)'});
-  mk(g,'path',{d:`M${x-30} ${y} L${x+30} ${y}`,stroke:'var(--char)','stroke-width':1.2});
-  const t=mk(g,'text',{x,y:y-42,'text-anchor':'middle','font-family':'Kalam, cursive','font-size':18,'font-weight':700,fill:'var(--char)'});t.textContent='N';
-}
-
-/* ---------- WIDOK WYSPY ---------- */
-const map=document.getElementById('map');
-function matches(k){const r=R[k];if(filt==='dlc')return!!r.dlc;if(filt==='nv')return!visited[k];if(filt==='all')return true;return r.d===+filt}
-function draw(){
-  const g=defs(map,1180,640);
-  const pts=Object.values(R).concat(Object.values(T));
-  // morze na południu (ciemna plama tuszu jak w grze)
-  mk(g,'path',{d:'M470 640 C500 600 540 612 560 590 C590 560 640 600 660 575 C690 545 740 590 790 572 C840 556 880 600 930 585 C980 570 1010 610 1060 596 C1100 585 1150 612 1180 600 L1180 640 Z',fill:'#0d0d0d',opacity:.9});
-  mountains(g,1180,640,pts.map(p=>({x:p.x,y:p.y,r:62})).concat([{x:1140,y:410,r:60},{x:900,y:610,r:90},{x:700,y:610,r:80}]),3,95);
-  compass(g,1140,410);
-  const on=new Set(),near=new Set();
-  if(path)for(let i=0;i<path.length-1;i++)adj[path[i]].forEach(e=>{if(e.to===path[i+1])on.add(e.i)});
-  else adj[sel].forEach(e=>{near.add(e.i);if(T[e.to])adj[e.to].forEach(f=>{if(R[f.to])near.add(f.i)})});
-  E.forEach(([a,b,t,dl],i)=>sketchLine(g,P(a),P(b),(dl&&!isRail(a,b)?'dlc ':'')+(on.has(i)?'on':near.has(i)?'near':''),isRail(a,b)));
-  for(const k in T){const t=T[k],tg=mk(map,'g',{class:'tz'+(path&&path.includes(k)?' onpath':'')});
-    mk(tg,'path',{d:`M${t.x} ${t.y-8} L${t.x+8} ${t.y} L${t.x} ${t.y+8} L${t.x-8} ${t.y} Z`});
-    tag(tg,t.x<120?t.x-6:t.x,t.up?t.y-16:t.y+26,t.n,t.x<120?'start':'middle','s');tg.addEventListener('click',()=>openRegion(k))}
-  // glows pod szkicem (bez filtra drgań)
-  for(const k in R){const r=R[k];
-    const ng=mk(map,'g',{class:'node'+(k===sel?' sel':'')+(path&&path.includes(k)?' onpath':'')+(filt!=='all'&&!matches(k)?' dim':''),tabindex:0,role:'button','aria-label':r.n+' ('+r.en+')'});
-    mk(ng,'circle',{cx:r.x,cy:r.y,r:24,class:'glow',filter:`url(#blur${map.id})`});
-    const rg=mk(ng,'g',{filter:`url(#rough${map.id})`});
-    mk(rg,'circle',{cx:r.x,cy:r.y,r:12,fill:'var(--tag)',stroke:'var(--char)','stroke-width':2.6});
-    mk(rg,'circle',{cx:r.x,cy:r.y,r:6.5,fill:DC[r.d]});
-    if(visited[k]){const c=mk(ng,'text',{x:r.x+13,y:r.y-12,class:'tick'});c.textContent='✓'}
-    const lp=r.lp||(r.y<110?'up':'down');let anchor=r.x<120?'start':r.x>1000?'end':'middle',lx=r.x<120?r.x-14:r.x>1000?r.x+14:r.x,ly=lp==='up'?r.y-24:r.y+38;
-    if(lp==='l'){anchor='end';lx=r.x-22;ly=r.y+6}if(lp==='r'){anchor='start';lx=r.x+22;ly=r.y+6}
-    tag(ng,lx,ly,r.n,anchor);
-    ng.addEventListener('click',()=>select(k));
-    ng.addEventListener('dblclick',()=>openRegion(k));
-    ng.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select(k)}});
-  }
-}
-function tagsHTML(r){return `<div class="tags"><span class="tag t${r.d}">${DN[r.d]}</span>${r.dlc?'<span class="tag tdlc">Far Territory</span>':'<span class="tag tbase">gra podstawowa</span>'}</div>`}
-function connsHTML(k){const nb=regionNeighbours(k);
-  return `<div><p class="lbl">Połączenia · ${nb.length}</p><ul class="conns">${nb.map(n=>`<li><button data-k="${n.k}">${R[n.k].n}</button><small>${n.via&&!n.t.includes(n.via)?n.via+' · ':''}${n.t}${n.dlc?' · DLC':''}</small></li>`).join('')}</ul></div>`}
-function select(k){sel=k;path=null;renderPanel();draw()}
-function renderPanel(){
-  const r=R[sel],p=document.getElementById('panel');
-  p.innerHTML=`<div><p class="lbl">Region</p><h3>${r.n}</h3><div class="en">${r.en}</div></div>${tagsHTML(r)}<p>${r.t}</p>
-  <button class="btn primary" id="open">Otwórz mapę szczegółową →</button>
-  <label class="check"><input type="checkbox" id="vis" ${visited[sel]?'checked':''}> Byłem tu</label>
-  ${connsHTML(sel)}
-  <div class="row"><button class="btn" id="asFrom">Trasa stąd</button><button class="btn" id="asTo">Trasa tutaj</button></div>`;
-  p.querySelectorAll('.conns button').forEach(b=>b.onclick=()=>select(b.dataset.k));
-  p.querySelector('#open').onclick=()=>openRegion(sel);
-  p.querySelector('#vis').onchange=e=>{e.target.checked?visited[sel]=1:delete visited[sel];save('tld-visited',visited);draw();renderGrid()};
-  p.querySelector('#asFrom').onclick=()=>{fromS.value=sel;route(true)};
-  p.querySelector('#asTo').onclick=()=>{toS.value=sel;route(true)};
-}
-
-/* ---------- WIDOK REGIONU ---------- */
-/* ---------- MAPY SZCZEGÓŁOWE ---------- */
-const MK={ml:'mystery-lake',ch:'coastal-highway',pv:'pleasant-valley',dp:'desolation-point',tw:'timberwolf-mountain',fm:'forlorn-muskeg',br:'broken-railroad',mt:'mountain-town',hr:'hushed-river-valley',bi:'bleak-inlet',ac:'ash-canyon',bk:'blackrock',tp:'transfer-pass',fa:'forsaken-airfield',zc:'zone-of-contamination',sp:'sundered-pass',
-  rav:'ravine',wr:'winding-river-&-carter-hydro-dam',crh:'crumbling-highway',kp:'keepers-pass',fr:'far-range-branch-line',cave:'transition-cave',world:'game-world',conn:'connections-between-regions',lm:'langston-mine'};
-const X={world:{n:'Cały świat',en:'Game world'},conn:{n:'Połączenia regionów',en:'Connections between regions'},lm:{n:'Kopalnia Langston',en:'Langston Mine'}};
-let MAPS=window.TLD_MAPS_FALLBACK||{};
-fetch('data/maps.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(j=>{if(j)MAPS=j}).catch(()=>{});
-let variant=load('tld-variant','pilgrim'),layerSel='map';
-let pins2=load('tld-pins2',{}),pinMode=false;
-const Q=k=>R[k]||T[k]||X[k];
-function openRegion(k){location.hash=k}
-document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openRegion(b.dataset.open));
-function showView(){
-  const k=location.hash.slice(1),it=Q(k);
-  document.getElementById('vIsland').hidden=!!it;
-  document.getElementById('extras').hidden=!!it;
-  document.getElementById('vRegion').hidden=!it;
-  document.getElementById('listSec').hidden=!!it;
-  document.getElementById('routeSec').hidden=!!it;
-  document.getElementById('subt').textContent=it?it.n:'Mapa wyspy';
-  document.title=it?it.n+' – Wielki Niedźwiedź':'Wielki Niedźwiedź – mapa';
-  if(it){cur=k;if(R[k])sel=k;layerSel='map';pinMode=false;loadMap();renderRPanel();window.scrollTo({top:0})}
-  else{cur=null;renderPanel();draw()}
-}
-window.addEventListener('hashchange',showView);
-document.getElementById('back').onclick=()=>{history.replaceState(null,'',location.pathname);showView()};
-
-/* przeglądarka mapy: przesuwanie, zoom kółkiem i szczypaniem */
-const viewer=document.getElementById('viewer'),layer=document.getElementById('layer'),img=document.getElementById('mimg'),vstatus=document.getElementById('vstatus'),pinsLayer=document.getElementById('pinsLayer');
-let V={s:1,x:0,y:0,fit:1,iw:0,ih:0};
-function apply(){layer.style.transform=`translate(${V.x}px,${V.y}px) scale(${V.s})`;
-  pinsLayer.querySelectorAll('.mpin').forEach(p=>p.style.transform=`translate(${p.dataset.x*V.iw}px,${p.dataset.y*V.ih}px) scale(${1/V.s})`)}
-function fit(){const W=viewer.clientWidth,H=viewer.clientHeight;if(!V.iw)return;V.fit=Math.min(W/V.iw,H/V.ih);V.s=V.fit;V.x=(W-V.iw*V.s)/2;V.y=(H-V.ih*V.s)/2;apply()}
-function zoomAt(f,cx,cy){const ns=Math.max(V.fit*.6,Math.min(V.fit*14,V.s*f));const k=ns/V.s;V.x=cx-(cx-V.x)*k;V.y=cy-(cy-V.y)*k;V.s=ns;apply()}
-function mapKey(){const base=MK[cur];if(layerSel==='loc'&&MAPS[base+'-map-locations'])return base+'-map-locations';return base}
-function loadMap(){
-  const e=MAPS[mapKey()];
-  document.querySelectorAll('[data-v]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===variant));
-  const hasLoc=!!MAPS[MK[cur]+'-map-locations'];document.getElementById('layerSeg').hidden=!hasLoc;
-  document.querySelectorAll('[data-l]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===layerSel));
-  const fromFT=['fa','zc','sp'].includes(cur)&&layerSel==='loc';
-  document.getElementById('credit').innerHTML=fromFT
-    ?'Mapa lokacji: Krueger – poradnik „Tales from the Far Territory map locations” (Steam). Pinezki i notatki są Twoje i zapisują się w tej przeglądarce.'
-    :'Mapa: HokuOwl – poradnik „Updated Region Maps [2024]” (Steam). Pinezki i notatki są Twoje i zapisują się w tej przeglądarce.';
-  img.removeAttribute('src');V.iw=0;layer.style.visibility='hidden';
-  if(!e){vstatus.hidden=false;vstatus.textContent='Brak szczegółowej mapy dla tego miejsca.';return}
-  vstatus.hidden=false;vstatus.textContent='Wczytywanie mapy…';
-  img.onload=()=>{V.iw=img.naturalWidth;V.ih=img.naturalHeight;vstatus.hidden=true;layer.style.visibility='visible';renderPins();fit()};
-  img.onerror=()=>{vstatus.hidden=false;vstatus.textContent='Nie udało się wczytać mapy. Sprawdź połączenie i odśwież stronę.'};
-  img.src=e[variant]||e.pilgrim;
-}
-document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{variant=b.dataset.v;save('tld-variant',variant);loadMap()});
-document.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{layerSel=b.dataset.l;loadMap()});
-document.getElementById('zin').onclick=()=>zoomAt(1.5,viewer.clientWidth/2,viewer.clientHeight/2);
-document.getElementById('zout').onclick=()=>zoomAt(1/1.5,viewer.clientWidth/2,viewer.clientHeight/2);
-document.getElementById('zfit').onclick=fit;
-addEventListener('resize',()=>{if(cur&&V.iw)fit()});
-viewer.addEventListener('wheel',ev=>{if(!V.iw)return;ev.preventDefault();const r=viewer.getBoundingClientRect();zoomAt(Math.exp(-ev.deltaY*0.0015),ev.clientX-r.left,ev.clientY-r.top)},{passive:false});
-const ptr=new Map();let moved=0,pinch=null;
-viewer.addEventListener('pointerdown',ev=>{if(ev.target.closest('.vctrl'))return;viewer.setPointerCapture(ev.pointerId);ptr.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});moved=0;
-  if(ptr.size===2){const [a,b]=[...ptr.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y)}}else viewer.classList.add('drag')});
-viewer.addEventListener('pointermove',ev=>{if(!ptr.has(ev.pointerId))return;const p=ptr.get(ev.pointerId),dx=ev.clientX-p.x,dy=ev.clientY-p.y;
-  if(ptr.size===1){V.x+=dx;V.y+=dy;moved+=Math.abs(dx)+Math.abs(dy);apply()}
-  ptr.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});
-  if(ptr.size===2&&pinch){const [a,b]=[...ptr.values()],d=Math.hypot(a.x-b.x,a.y-b.y),r=viewer.getBoundingClientRect();zoomAt(d/pinch.d,(a.x+b.x)/2-r.left,(a.y+b.y)/2-r.top);pinch.d=d;moved+=10}});
-function up(ev){if(!ptr.has(ev.pointerId))return;ptr.delete(ev.pointerId);if(ptr.size<2)pinch=null;viewer.classList.remove('drag');
-  if(ev.type==='pointerup'&&moved<6&&pinMode&&V.iw&&!ev.target.closest('.vctrl')){const r=viewer.getBoundingClientRect();
-    const fx=((ev.clientX-r.left)-V.x)/V.s/V.iw,fy=((ev.clientY-r.top)-V.y)/V.s/V.ih;
-    if(fx>=0&&fx<=1&&fy>=0&&fy<=1){const ni=document.getElementById('pnote');(pins2[cur]=pins2[cur]||[]).push({x:+fx.toFixed(4),y:+fy.toFixed(4),type:tool,note:(ni&&ni.value||'').trim()});if(ni)ni.value='';save('tld-pins2',pins2);renderPins();renderRPanel()}}}
-viewer.addEventListener('pointerup',up);viewer.addEventListener('pointercancel',up);
-const SYM={shelter:'⌂',res:'○',danger:'✕',note:'•'};
-const SYMN={shelter:'schronienie',res:'zasoby',danger:'niebezpieczeństwo',note:'notatka'};
-function renderPins(){pinsLayer.innerHTML=(pins2[cur]||[]).map(p=>`<div class="mpin ${p.type}" data-x="${p.x}" data-y="${p.y}"><span><i>${SYM[p.type]}</i>${p.note?`<b>${p.note.replace(/[<&>]/g,'')}</b>`:''}</span></div>`).join('');apply()}
-
-function renderRPanel(){
-  const k=cur,it=Q(k),p=document.getElementById('rpanel'),pr=pins2[k]||[];
-  const isR=!!R[k],dn=done[k]||{};
-  let head=`<div><p class="lbl">${isR?'Region':T[k]?'Strefa przejściowa':'Mapa'}</p><h3>${it.n}</h3><div class="en">${it.en}</div></div>`;
-  let body='';
-  if(isR){const r=R[k];body=`${tagsHTML(r)}<p>${r.t}</p>
-    <label class="check"><input type="checkbox" id="rvis" ${visited[k]?'checked':''}> Byłem tu</label>
-    <div><p class="lbl">Ważne miejsca</p><ul class="places">${r.k.map((x,i)=>`<li><label><input type="checkbox" data-i="${i}" ${dn[i]?'checked':''}><span class="${dn[i]?'done':''}">${x[0]}<small>${x[1]}</small></span></label></li>`).join('')}</ul></div>`}
-  else if(T[k]){const ns=(adj[k]||[]).filter(e=>R[e.to]);body=`<p>Łączy: ${ns.map(e=>R[e.to].n).join(', ')}.</p>`}
-  const pinsHTML=`<div><p class="lbl">Pinezki</p>
-    <button class="btn ${pinMode?'primary':''}" id="pm" aria-pressed="${pinMode}">${pinMode?'Stawianie pinezek: włączone':'Stawiaj pinezki'}</button>
-    ${pinMode?`<div class="tools" role="group" aria-label="Rodzaj pinezki" style="margin-top:8px">${Object.keys(SYM).map(s=>`<button class="btn" data-t="${s}" aria-pressed="${s===tool}">${SYM[s]} ${SYMN[s]}</button>`).join('')}</div>
-    <div style="margin-top:8px"><input type="text" id="pnote" placeholder="Podpis, potem kliknij na mapie" maxlength="40"></div>`:''}
-    ${pr.length?`<ul class="pins" style="margin-top:10px">${pr.map((x,i)=>`<li><span>${SYM[x.type]} ${x.note||SYMN[x.type]}</span><button data-d="${i}">usuń</button></li>`).join('')}</ul>`:'<p class="hint" style="margin-top:8px">Brak pinezek na tej mapie.</p>'}</div>`;
-  const conns=isR?connsHTML(k):T[k]?`<div><p class="lbl">Przejdź do</p><ul class="conns">${(adj[k]||[]).filter(e=>R[e.to]).map(e=>`<li><button data-k="${e.to}">${R[e.to].n}</button><small>${e.t}</small></li>`).join('')}</ul></div>`:'';
-  p.innerHTML=head+body+pinsHTML+conns;
-  const rv=p.querySelector('#rvis');if(rv)rv.onchange=e=>{e.target.checked?visited[k]=1:delete visited[k];save('tld-visited',visited)};
-  p.querySelectorAll('.places input').forEach(c=>c.onchange=()=>{done[k]=done[k]||{};c.checked?done[k][c.dataset.i]=1:delete done[k][c.dataset.i];save('tld-done',done);renderRPanel()});
-  p.querySelector('#pm').onclick=()=>{pinMode=!pinMode;viewer.classList.toggle('pinmode',pinMode);renderRPanel()};
-  p.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{tool=b.dataset.t;p.querySelectorAll('[data-t]').forEach(x=>x.setAttribute('aria-pressed',x===b))});
-  p.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{pins2[k].splice(+b.dataset.d,1);save('tld-pins2',pins2);renderPins();renderRPanel()});
-  p.querySelectorAll('.conns button').forEach(b=>b.onclick=()=>openRegion(b.dataset.k));
-}
-
-/* ---------- PLANER TRASY ---------- */
-const fromS=document.getElementById('from'),toS=document.getElementById('to');
-const opts=Object.keys(R).sort((a,b)=>R[a].n.localeCompare(R[b].n,'pl')).map(k=>`<option value="${k}">${R[k].n}</option>`).join('');
-fromS.innerHTML=opts;toS.innerHTML=opts;fromS.value='ml';toS.value='bk';
-function bfs(a,b){const prev={[a]:null},q=[a];while(q.length){const c=q.shift();if(c===b)break;adj[c].forEach(e=>{if(!(e.to in prev)){prev[e.to]=c;q.push(e.to)}})}
-  if(!(b in prev))return null;const out=[];for(let c=b;c!==null;c=prev[c])out.unshift(c);return out}
-function route(scroll){
-  const a=fromS.value,b=toS.value,o=document.getElementById('rout');
-  if(location.hash&&scroll!=='init'){history.replaceState(null,'',location.pathname);showView()}
-  if(a===b){o.innerHTML='<p class="note">Wybierz dwa różne regiony.</p>';path=null;draw();return}
-  path=bfs(a,b);
-  const regs=path.filter(k=>R[k]).length;
-  const notes=[];for(let i=0;i<path.length-1;i++){const e=adj[path[i]].find(x=>x.to===path[i+1]);notes.push(`<b>${P(path[i]).n} → ${P(path[i+1]).n}:</b> ${e.t}`)}
-  const dlc=path.some(k=>R[k]&&R[k].dlc)||path.includes('fr');
-  const ch=regs-1;
-  o.innerHTML=`<div class="steps">${path.map((k,i)=>`${i?'<span class="arrow">→</span>':''}<span class="step${T[k]?' t':''}">${P(k).n}</span>`).join('')}</div>
-  <p class="note">${ch} ${ch===1?'zmiana regionu':ch<5?'zmiany regionu':'zmian regionu'}${dlc?' · wymaga DLC Far Territory':''}</p>
-  <div class="note" style="display:grid;gap:4px">${notes.map(n=>`<div>${n}</div>`).join('')}</div>`;
-  sel=a;renderPanel();draw();
-  if(scroll===true)document.getElementById('rh').scrollIntoView({behavior:'smooth',block:'start'});
-}
-fromS.onchange=route;toS.onchange=route;
-document.getElementById('swap').onclick=()=>{const t=fromS.value;fromS.value=toS.value;toS.value=t;route()};
-
-/* ---------- LISTA ---------- */
-const q=document.getElementById('q');
-function renderGrid(){
-  const s=q.value.trim().toLowerCase();
-  const ks=Object.keys(R).filter(k=>matches(k)&&(!s||R[k].n.toLowerCase().includes(s)||R[k].en.toLowerCase().includes(s)||(R[k].al||'').toLowerCase().includes(s)));
-  document.getElementById('grid').innerHTML=ks.length?ks.map(k=>{const r=R[k];
-    return `<button class="card" style="--c:${TC[r.d]}" data-k="${k}"><h4>${r.n}${visited[k]?'<span class="v">✓ byłem</span>':''}</h4><span class="meta">${r.en} · ${DN[r.d]}${r.dlc?' · DLC':''}</span><p>${r.t}</p></button>`}).join(''):'<p class="empty">Brak regionów dla tego filtra.</p>';
-  document.querySelectorAll('.card').forEach(c=>c.onclick=()=>openRegion(c.dataset.k));
-}
-document.querySelectorAll('[data-f]').forEach(c=>c.onclick=()=>{filt=c.dataset.f;document.querySelectorAll('[data-f]').forEach(x=>x.setAttribute('aria-pressed',x===c));renderGrid();draw()});
-q.oninput=renderGrid;
-
-/* ---------- ŚNIEG ---------- */
-(function(){
-  const c=document.getElementById('snow'),x=c.getContext('2d');let W,H,f=[];
-  const still=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function size(){W=c.width=innerWidth*devicePixelRatio;H=c.height=innerHeight*devicePixelRatio;
-    f=Array.from({length:Math.round(innerWidth/9)},()=>({x:Math.random()*W,y:Math.random()*H,r:(Math.random()*1.8+.4)*devicePixelRatio,s:Math.random()*.6+.25,w:Math.random()*Math.PI*2}))}
-  function frame(){x.clearRect(0,0,W,H);x.fillStyle='rgba(223,232,234,.75)';
-    for(const p of f){x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill();
-      if(!still){p.y+=p.s*devicePixelRatio*(p.r);p.w+=.01;p.x+=Math.sin(p.w)*.4-.25;if(p.y>H){p.y=-5;p.x=Math.random()*W}if(p.x<0)p.x=W}}
-    if(!still)requestAnimationFrame(frame)}
-  addEventListener('resize',size);size();frame();
-})();
-
-renderGrid();route('init');showView();
-if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(!cur)draw()});
-</script>
+<script src="assets/data.js"></script>
+<script src="assets/sketch.js"></script>
+<script src="assets/app.js"></script>
 </body>
 </html>
