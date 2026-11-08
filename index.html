@@ -3,137 +3,181 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Przejrzysta mapa połączeń regionów The Long Dark z planerem trasy i linkami do map interaktywnych.">
-<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
-<title>Great Bear – mapa regionów</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<title>Wielki Niedźwiedź – mapa</title>
+<meta name="description" content="Mapa regionów The Long Dark w stylu mapy rysowanej węglem: połączenia, planer trasy, własne pinezki i notatki.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500&family=Kalam:wght@300;400;700&family=Barlow:wght@400;500;600&display=swap">
 <style>
-/* Layout: mapa-schemat jak szkic węglem na mroźnym papierze, panel regionu obok; niżej planer trasy i lista */
+/* Układ: nocne niebo z padającym śniegiem; mapa jako szkic węglem na papierze; panele jak dziennik z menu gry */
 :root{
-  --paper:#e8edef; --sheet:#f5f8f9; --ink:#1d2328; --ink-2:#4c5862; --line:#9aa7b0; --rule:#cfd8dd;
-  --ember:#c4521d; --ember-soft:#f3dccf;
-  --easy:#3f7d4e; --mid:#b07a12; --hard:#b0362c;
-  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --night:#0b1419; --night-2:#132530; --aurora:#2f6f6a;
+  --frost:#dfe8ea; --frost-2:#9fb3b9; --hair:rgba(223,232,234,.16); --glass:rgba(9,17,22,.74);
+  --ember:#e89a45; --ember-deep:#b8642a;
+  --paper:#cfc3a6; --paper-2:#bfb193; --char:#2a2520; --char-2:#5b5145;
+  --easy:#5f6d3b; --mid:#a5772b; --hard:#8c3524;
+  --ui:"Oswald","Arial Narrow",Arial,sans-serif;
+  --hand:"Kalam","Segoe Print","Comic Sans MS",cursive;
   --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --paper:#11171c; --sheet:#182128; --ink:#e3e9ec; --ink-2:#9fb0ba; --line:#56656f; --rule:#2a353d;
-  --ember:#ee7a3f; --ember-soft:#3a2418; --easy:#6cbf7f; --mid:#e0ab45; --hard:#ea6a5c; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --paper:#11171c; --sheet:#182128; --ink:#e3e9ec; --ink-2:#9fb0ba; --line:#56656f; --rule:#2a353d;
-  --ember:#ee7a3f; --ember-soft:#3a2418; --easy:#6cbf7f; --mid:#e0ab45; --hard:#ea6a5c; color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
-.wrap{max-width:1240px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:28px}
-header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;border-bottom:2px solid var(--ink);padding-bottom:12px}
-h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,5vw,46px);line-height:1;margin:0;letter-spacing:.01em;text-transform:uppercase;text-wrap:balance}
-h1 small{display:block;font-family:var(--mono);font-size:12px;font-weight:400;letter-spacing:.08em;color:var(--ink-2);margin-bottom:6px}
-.toplinks{display:flex;flex-wrap:wrap;gap:8px}
-a.btn,button.btn{font:600 14px var(--body);display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);text-decoration:none;border-radius:3px;cursor:pointer}
-a.btn.primary,button.btn.primary{background:var(--ink);color:var(--paper)}
-a.btn:hover,button.btn:hover{border-color:var(--ember);color:var(--ember)}
-a.btn.primary:hover,button.btn.primary:hover{background:var(--ember);border-color:var(--ember);color:#fff}
+html{background:var(--night);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;min-height:100vh;color:var(--frost);font:15px/1.55 var(--body);
+  background:
+    radial-gradient(120% 60% at 70% -10%, rgba(47,111,106,.45), transparent 60%),
+    radial-gradient(90% 50% at 10% 0%, rgba(40,70,95,.5), transparent 70%),
+    linear-gradient(180deg,var(--night-2) 0%,var(--night) 55%,#070d10 100%) fixed;}
+[hidden]{display:none!important}
+#snow{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:1260px;margin:0 auto;padding-block:26px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:30px}
+header{display:grid;gap:4px;justify-items:start}
+.kicker{font:400 12px var(--ui);letter-spacing:.42em;text-transform:uppercase;color:var(--frost-2)}
+h1{margin:0;font:300 clamp(34px,6.5vw,64px)/1 var(--ui);letter-spacing:.16em;text-transform:uppercase;text-wrap:balance;text-shadow:0 2px 24px rgba(0,0,0,.6)}
+.sub{font:300 14px var(--ui);letter-spacing:.24em;text-transform:uppercase;color:var(--ember)}
+h2{margin:0 0 14px;font:400 20px var(--ui);letter-spacing:.22em;text-transform:uppercase;color:var(--frost)}
+h2::after{content:"";display:block;width:56px;height:1px;background:var(--ember);margin-top:8px}
+.btn{font:400 13px var(--ui);letter-spacing:.16em;text-transform:uppercase;display:inline-flex;align-items:center;gap:8px;padding:9px 14px;background:transparent;color:var(--frost);border:1px solid var(--hair);border-radius:2px;cursor:pointer;text-decoration:none}
+.btn:hover{border-color:var(--ember);color:var(--ember)}
+.btn.primary{border-color:var(--ember);color:var(--ember)}
+.btn.primary:hover{background:var(--ember);color:var(--night)}
+.btn[aria-pressed="true"]{background:var(--frost);color:var(--night);border-color:var(--frost)}
 :focus-visible{outline:2px solid var(--ember);outline-offset:2px}
-h2{font-family:var(--display);font-weight:600;font-size:24px;text-transform:uppercase;letter-spacing:.03em;margin:0 0 12px}
-.main{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
-@media (max-width:900px){.main{grid-template-columns:1fr}}
-.mapbox{background:var(--sheet);border:1px solid var(--rule);border-radius:4px;min-width:0}
-.mapscroll{overflow-x:auto}
-.mapscroll svg{display:block;width:100%;min-width:720px;height:auto}
-.legend{display:flex;flex-wrap:wrap;gap:6px 16px;padding:10px 14px;border-top:1px solid var(--rule);font-size:13px;color:var(--ink-2)}
+
+.main{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:20px;align-items:start}
+@media (max-width:920px){.main{grid-template-columns:1fr}}
+.sheet{position:relative;border-radius:3px;box-shadow:0 18px 50px rgba(0,0,0,.55),0 0 0 1px rgba(0,0,0,.4);overflow:hidden;min-width:0;background:var(--paper)}
+.sheetscroll{overflow-x:auto}
+.sheetscroll svg{display:block;width:100%;min-width:740px;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;padding:10px 14px;background:var(--paper-2);color:var(--char);font:400 15px var(--hand);border-top:1px solid rgba(42,37,32,.25)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
-.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
-.dia{width:9px;height:9px;transform:rotate(45deg);border:1.5px solid var(--ink-2);display:inline-block}
-.edge{stroke:var(--line);stroke-width:2;fill:none}
-.edge.dlc{stroke-dasharray:6 5}
-.edge.on{stroke:var(--ember);stroke-width:4}
-.edge.near{stroke:var(--ink-2);stroke-width:2.5}
+.dot{width:11px;height:11px;border-radius:50%;display:inline-block;border:2px solid var(--char)}
+
+/* elementy SVG */
+.edge{fill:none;stroke:var(--char);stroke-linecap:round}
+.edge.a{stroke-width:2.4;opacity:.78}.edge.b{stroke-width:1;opacity:.45}
+.edge.dlc{stroke-dasharray:7 6}
+.edge.near{opacity:1;stroke-width:3}
+.edge.on{stroke:var(--ember-deep);opacity:1;stroke-width:4.5}
 .node{cursor:pointer}
-.node circle.c{stroke:var(--sheet);stroke-width:3}
-.node circle.ring{fill:none;stroke:var(--ember);stroke-width:3;opacity:0}
-.node.sel circle.ring,.node.onpath circle.ring{opacity:1}
-.node text,.tz text{font-family:var(--display);font-weight:600;font-size:17px;fill:var(--ink);paint-order:stroke;stroke:var(--sheet);stroke-width:5px;stroke-linejoin:round;letter-spacing:.02em}
-.node .tick{font-family:var(--mono);font-size:12px;font-weight:500;fill:var(--sheet);stroke:none}
-.node.dim{opacity:.25}
-.tz rect{fill:var(--sheet);stroke:var(--ink-2);stroke-width:1.5}
-.tz text{font-family:var(--mono);font-weight:400;font-size:11.5px;fill:var(--ink-2)}
-.tz.onpath rect{stroke:var(--ember);fill:var(--ember-soft)}
-.panel{background:var(--sheet);border:1px solid var(--rule);border-radius:4px;padding:18px;display:grid;gap:14px;min-width:0}
-.panel h3{font-family:var(--display);font-weight:700;font-size:30px;line-height:1.05;margin:0;text-transform:uppercase}
+.node text,.tz text,.ex text,.lbl-big{font-family:var(--hand);fill:var(--char)}
+.node text.n{font-size:20px;font-weight:700}
+.node.dim{opacity:.22}
+.node .glow{fill:var(--ember);opacity:0}
+.node.sel .glow,.node.onpath .glow{opacity:.75}
+.node .tick{font-size:15px;font-weight:700;fill:var(--char)}
+.tz text{font-size:14px;fill:var(--char-2)}
+.tz path{fill:var(--paper);stroke:var(--char);stroke-width:1.6}
+.tz.onpath path{fill:var(--ember)}
+.ex{cursor:pointer}
+.ex text{font-size:17px;font-weight:700}
+.ex text:hover{fill:var(--ember-deep)}
+.ex text.via{font-size:14px;font-weight:400;fill:var(--char-2);cursor:default}
+.pin{cursor:pointer}
+.pin text{font-family:var(--hand);font-size:15px;fill:var(--char)}
+
+.panel{background:var(--glass);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid var(--hair);border-radius:3px;padding:20px;display:grid;gap:16px;min-width:0}
+.panel h3{margin:0;font:300 30px/1.05 var(--ui);letter-spacing:.08em;text-transform:uppercase}
+.en{font:400 13px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--frost-2);margin-top:4px}
 .tags{display:flex;flex-wrap:wrap;gap:6px}
-.tag{font:500 12px var(--mono);padding:3px 8px;border-radius:999px;border:1px solid currentColor;letter-spacing:.03em}
-.d1{color:var(--easy)}.d2{color:var(--mid)}.d3{color:var(--hard)}
-.tag.dlc{color:var(--ember)}
-.panel p{margin:0;color:var(--ink-2)}
-.lbl{font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin:0 0 6px}
-ul.conns{list-style:none;margin:0;padding:0;display:grid;gap:8px}
-ul.conns li{display:grid;gap:1px;border-left:3px solid var(--rule);padding-left:10px}
-ul.conns button{all:unset;cursor:pointer;font-weight:600;color:var(--ink)}
+.tag{font:400 12px var(--ui);letter-spacing:.14em;text-transform:uppercase;padding:3px 9px;border:1px solid currentColor;border-radius:2px}
+.t1{color:#a9bd73}.t2{color:#e0b25c}.t3{color:#e07a62}.tdlc{color:var(--ember)}.tbase{color:var(--frost-2)}
+.panel p{margin:0;color:var(--frost-2)}
+.lbl{font:400 11px var(--ui);letter-spacing:.24em;text-transform:uppercase;color:var(--frost-2);margin:0 0 8px}
+ul.conns{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+ul.conns li{display:grid;gap:1px;padding-left:12px;border-left:1px solid var(--ember)}
+ul.conns button{all:unset;cursor:pointer;font:400 15px var(--ui);letter-spacing:.06em;text-transform:uppercase}
 ul.conns button:hover{color:var(--ember)}
-ul.conns small{color:var(--ink-2);font-size:13px}
+ul.conns small{color:var(--frost-2);font-size:13px}
 .row{display:flex;flex-wrap:wrap;gap:8px}
-.check{display:flex;align-items:center;gap:8px;font-weight:500;cursor:pointer}
+.check{display:flex;align-items:center;gap:10px;cursor:pointer}
 .check input{width:18px;height:18px;accent-color:var(--ember)}
-.empty{color:var(--ink-2)}
-.route{background:var(--sheet);border:1px solid var(--rule);border-radius:4px;padding:18px;display:grid;gap:14px}
+ul.places{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+ul.places label{display:grid;grid-template-columns:18px 1fr;gap:10px;align-items:start;cursor:pointer}
+ul.places input{width:16px;height:16px;margin-top:3px;accent-color:var(--ember)}
+ul.places small{display:block;color:var(--frost-2);font-size:13px}
+ul.places .done{text-decoration:line-through;text-decoration-color:var(--ember);color:var(--frost-2)}
+ul.pins{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+ul.pins li{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:14px}
+ul.pins button{all:unset;cursor:pointer;color:var(--frost-2);font:400 12px var(--ui);letter-spacing:.12em;text-transform:uppercase}
+ul.pins button:hover{color:var(--ember)}
+.tools{display:flex;flex-wrap:wrap;gap:6px}
+input[type=text],input[type=search],select{font:500 15px var(--body);padding:9px 11px;background:rgba(0,0,0,.35);color:var(--frost);border:1px solid var(--hair);border-radius:2px;min-width:0;max-width:100%}
+input[type=text]{width:100%}
+.hint{font-size:13px;color:var(--frost-2)}
+
+.route{background:var(--glass);border:1px solid var(--hair);border-radius:3px;padding:20px;display:grid;gap:14px}
 .route form{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
-.route label{display:grid;gap:4px;font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
-select,input[type=search]{font:500 15px var(--body);padding:8px 10px;border:1.5px solid var(--line);border-radius:3px;background:var(--paper);color:var(--ink);min-width:0;max-width:100%}
-.steps{display:flex;flex-wrap:wrap;align-items:center;gap:6px 4px}
-.step{font-weight:600;padding:5px 10px;border-radius:3px;background:var(--ink);color:var(--paper)}
-.step.t{background:transparent;color:var(--ink-2);border:1px dashed var(--line);font:400 13px var(--mono)}
-.arrow{color:var(--ember);font-weight:700}
-.note{font-size:13px;color:var(--ink-2)}
-.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
-.chip{font:500 13px var(--mono);padding:6px 10px;border:1.5px solid var(--line);background:transparent;color:var(--ink-2);border-radius:999px;cursor:pointer}
-.chip[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--paper)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
-.card{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-rows:auto auto 1fr;gap:6px;padding:14px;background:var(--sheet);border:1px solid var(--rule);border-radius:4px;border-top:4px solid var(--rule)}
-.card:hover{border-color:var(--ink-2)}
+.route label{display:grid;gap:5px;font:400 11px var(--ui);letter-spacing:.24em;text-transform:uppercase;color:var(--frost-2)}
+.steps{display:flex;flex-wrap:wrap;align-items:center;gap:8px 6px}
+.step{font:400 14px var(--ui);letter-spacing:.1em;text-transform:uppercase;padding:6px 11px;border:1px solid var(--frost);border-radius:2px}
+.step.t{border-style:dashed;border-color:var(--frost-2);color:var(--frost-2);text-transform:none;letter-spacing:.02em;font-family:var(--body)}
+.arrow{color:var(--ember)}
+.note{font-size:14px;color:var(--frost-2)}
+.note b{color:var(--frost);font-weight:600}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.card{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-rows:auto auto 1fr;gap:6px;padding:16px;background:var(--glass);border:1px solid var(--hair);border-radius:3px;position:relative}
+.card::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:2px;background:var(--c)}
+.card:hover{border-color:var(--ember)}
 .card:focus-visible{outline:2px solid var(--ember)}
-.card.b1{border-top-color:var(--easy)}.card.b2{border-top-color:var(--mid)}.card.b3{border-top-color:var(--hard)}
-.card h4{margin:0;font-family:var(--display);font-size:21px;font-weight:600;text-transform:uppercase;display:flex;justify-content:space-between;gap:8px}
-.card h4 .v{font:500 11px var(--mono);color:var(--ember);align-self:center;white-space:nowrap}
-.card p{margin:0;font-size:14px;color:var(--ink-2)}
-.card .meta{font:400 12px var(--mono);color:var(--ink-2)}
-footer{font-size:13px;color:var(--ink-2);border-top:1px solid var(--rule);padding-top:12px}
-footer a{color:var(--ink)}
-@media (prefers-reduced-motion:no-preference){.edge,.node circle.ring{transition:stroke .2s,opacity .2s,stroke-width .2s}}
+.card h4{margin:0;font:400 19px var(--ui);letter-spacing:.08em;text-transform:uppercase;display:flex;justify-content:space-between;gap:8px}
+.card h4 .v{font-size:12px;color:var(--ember);letter-spacing:.14em;align-self:center;white-space:nowrap}
+.card .meta{font:400 12px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--frost-2)}
+.card p{margin:0;font-size:14px;color:var(--frost-2)}
+.empty{color:var(--frost-2)}
+footer{font-size:13px;color:var(--frost-2);border-top:1px solid var(--hair);padding-top:14px}
+.back{justify-self:start}
+@media (prefers-reduced-motion:no-preference){.node .glow{transition:opacity .25s}.edge{transition:stroke .2s,opacity .2s}}
 </style>
 </head>
 <body>
-
+<canvas id="snow" aria-hidden="true"></canvas>
 <div class="wrap">
   <header>
-    <h1><small>THE LONG DARK · WIELKI NIEDŹWIEDŹ</small>Mapa regionów</h1>
-    <div class="toplinks">
-      <a class="btn primary" href="https://elektronixx.github.io/TLD-Interactive-Map/" target="_blank" rel="noopener">Mapa interaktywna ↗</a>
-      <a class="btn" href="https://thelongdark.fandom.com/wiki/Special:AllMaps" target="_blank" rel="noopener">Mapy na wiki ↗</a>
-    </div>
+    <span class="kicker">The Long Dark</span>
+    <h1>Wielki Niedźwiedź</h1>
+    <span class="sub" id="subt">Mapa wyspy</span>
   </header>
 
-  <section class="main">
-    <div class="mapbox">
-      <div class="mapscroll"><svg id="map" viewBox="0 0 1180 640" role="img" aria-label="Schemat połączeń regionów The Long Dark"></svg></div>
+  <!-- WIDOK WYSPY -->
+  <div id="vIsland" class="main">
+    <div class="sheet">
+      <div class="sheetscroll"><svg id="map" viewBox="0 0 1180 640" role="img" aria-label="Szkic połączeń regionów Wielkiego Niedźwiedzia"></svg></div>
       <div class="legend">
         <span><i class="dot" style="background:var(--easy)"></i>łatwy</span>
         <span><i class="dot" style="background:var(--mid)"></i>średni</span>
         <span><i class="dot" style="background:var(--hard)"></i>trudny</span>
-        <span><i class="dia"></i>strefa przejściowa</span>
-        <span><svg width="26" height="6"><line x1="0" y1="3" x2="26" y2="3" class="edge dlc"/></svg>wymaga DLC Far Territory</span>
+        <span>◇ strefa przejściowa</span>
+        <span>- - - wymaga DLC Far Territory</span>
         <span>✓ odwiedzony</span>
-        <span>Schemat połączeń, nie w skali.</span>
+        <span>szkic, nie w skali</span>
       </div>
     </div>
     <aside class="panel" id="panel" aria-live="polite"></aside>
-  </section>
+  </div>
 
-  <section class="route" aria-labelledby="rh">
+  <!-- WIDOK REGIONU -->
+  <div id="vRegion" hidden>
+    <div class="main">
+      <div style="display:grid;gap:12px;min-width:0">
+        <button class="btn back" id="back">← Mapa wyspy</button>
+        <div class="sheet">
+          <div class="sheetscroll"><svg id="rmap" viewBox="0 0 1000 640" role="img" aria-label="Arkusz regionu"></svg></div>
+          <div class="legend">
+            <span>⌂ schronienie</span><span>○ zasoby</span><span>✕ niebezpieczeństwo</span><span>• notatka</span>
+            <span>strzałki = wyjścia do sąsiednich regionów</span>
+          </div>
+        </div>
+      </div>
+      <aside class="panel" id="rpanel"></aside>
+    </div>
+  </div>
+
+  <section class="route" aria-labelledby="rh" id="routeSec">
     <h2 id="rh" style="margin:0">Planer trasy</h2>
-    <form id="rf">
+    <form id="rf" onsubmit="return false">
       <label for="from">Skąd<select id="from"></select></label>
       <label for="to">Dokąd<select id="to"></select></label>
       <button class="btn" type="button" id="swap">⇄ Zamień</button>
@@ -141,168 +185,316 @@ footer a{color:var(--ink)}
     <div id="rout"></div>
   </section>
 
-  <section aria-labelledby="lh">
-    <h2 id="lh">Wszystkie regiony</h2>
+  <section aria-labelledby="lh" id="listSec">
+    <h2 id="lh">Regiony</h2>
     <div class="filters" role="group" aria-label="Filtry">
-      <button class="chip" data-f="all" aria-pressed="true">wszystkie</button>
-      <button class="chip" data-f="1" aria-pressed="false">łatwe</button>
-      <button class="chip" data-f="2" aria-pressed="false">średnie</button>
-      <button class="chip" data-f="3" aria-pressed="false">trudne</button>
-      <button class="chip" data-f="dlc" aria-pressed="false">Far Territory</button>
-      <button class="chip" data-f="nv" aria-pressed="false">nieodwiedzone</button>
-      <input type="search" id="q" placeholder="Szukaj regionu…" aria-label="Szukaj regionu">
+      <button class="btn" data-f="all" aria-pressed="true">Wszystkie</button>
+      <button class="btn" data-f="1" aria-pressed="false">Łatwe</button>
+      <button class="btn" data-f="2" aria-pressed="false">Średnie</button>
+      <button class="btn" data-f="3" aria-pressed="false">Trudne</button>
+      <button class="btn" data-f="dlc" aria-pressed="false">Far Territory</button>
+      <button class="btn" data-f="nv" aria-pressed="false">Nieodwiedzone</button>
+      <input type="search" id="q" placeholder="Szukaj (PL lub EN)…" aria-label="Szukaj regionu">
     </div>
     <div class="grid" id="grid"></div>
   </section>
 
-  <footer>Mapy terenu z lokacjami: <a href="https://elektronixx.github.io/TLD-Interactive-Map/" target="_blank" rel="noopener">TLD Interactive Map</a> (elektronixx) – po otwarciu wybierz region z ekranu startowego. Połączenia według opisów regionów (stan na listopad 2026, 16 regionów). Znaczniki „odwiedzony” zapisują się tylko w tej przeglądarce.</footer>
+  <footer>Polskie nazwy regionów to tłumaczenia robocze – pod każdą jest oryginalna nazwa z gry. Odwiedzone regiony, odhaczone miejsca i pinezki zapisują się tylko w tej przeglądarce.</footer>
 </div>
 
 <script>
-const EXT='https://elektronixx.github.io/TLD-Interactive-Map/';
-const wiki=n=>'https://thelongdark.fandom.com/wiki/'+encodeURIComponent(n.replace(/ /g,'_'));
 const DN={1:'łatwy',2:'średni',3:'trudny'};
+const DC={1:'var(--easy)',2:'var(--mid)',3:'var(--hard)'};
+const TC={1:'#a9bd73',2:'#e0b25c',3:'#e07a62'};
 const R={
- ml:{n:'Mystery Lake',d:1,x:470,y:420,t:'Śródlądowe jezioro i linia kolejowa, chatki i łowienie ryb. Najlepszy start – centrum mapy, tory jako punkt orientacyjny.'},
- ch:{n:'Coastal Highway',d:2,x:290,y:500,t:'Zamarznięta zatoka i nadbrzeżna droga z osadą i obozem rybackim.'},
- pv:{n:'Pleasant Valley',d:3,x:300,y:290,t:'Otwarte pola uprawne i długie odsłonięte trasy – częste zamiecie. Trzymaj się dróg.'},
- dp:{n:'Desolation Point',d:2,x:90,y:520,t:'Zwarte wybrzeże ze starym statkiem wielorybniczym, przetwórnią i kuźnią.'},
- tw:{n:'Timberwolf Mountain',d:3,x:180,y:160,t:'Wysoka góra z wejściem na szczyt, ostra pogoda i długie podejścia.'},
- fm:{n:'Forlorn Muskeg',d:3,x:650,y:400,t:'Rozległe bagno przecięte torami, cienki lód i mało schronień.'},
- br:{n:'Broken Railroad',d:2,x:760,y:290,t:'Krótki region kolejowy z Maintenance Yard i domkiem myśliwskim. Brama do Far Territory.'},
- mt:{n:'Mountain Town',d:1,x:580,y:260,t:'Domy Milton w górskiej kotlinie. Mało drapieżników, dużo jedzenia i schronień.'},
- hr:{n:'Hushed River Valley',d:3,x:560,y:100,t:'Odległa, wielopoziomowa dolina klifów, jaskiń i wodospadów.'},
- bi:{n:'Bleak Inlet',d:3,x:610,y:575,t:'Przemysłowe wybrzeże z konserwownią, stromy teren i stada timberwolfów.'},
- ac:{n:'Ash Canyon',d:3,x:60,y:60,t:'Głęboki kanion z płaskowyżami, mostami linowymi i niewieloma budynkami.'},
- bk:{n:'Blackrock',d:2,x:400,y:120,t:'Pagórkowaty region z więzieniem, częstymi zamieciami i timberwolfami.'},
- tp:{n:'Transfer Pass',d:2,x:890,y:200,dlc:1,t:'Spokojna stacja kolejowa – węzeł łączący Lower Great Bear z trzema regionami Far Territory.'},
- fa:{n:'Forsaken Airfield',d:3,x:1060,y:95,dlc:1,t:'Szeroka dolina z opuszczonym lotniskiem i częstą mgłą glimmer. Tu startuje pierwszy Tale (wieża kontrolna).'},
- zc:{n:'Zone of Contamination',d:3,x:900,y:50,dlc:1,t:'Region kopalni odkrywkowej – strefy toksyczne i gazy kopalniane.'},
- sp:{n:'Sundered Pass',d:3,x:1060,y:330,dlc:1,t:'Zimna przełęcz górska – stromy teren, lawiny, timberwolfy i kuguar.'}
+ ml:{n:'Tajemnicze Jezioro',en:'Mystery Lake',d:1,x:470,y:420,t:'Śródlądowe jezioro i linia kolejowa, chatki i łowienie ryb. Najlepszy start – środek wyspy, tory jako punkt orientacyjny.',
+   k:[['Camp Office','biuro obozu nad jeziorem'],['Trapper\'s Homestead','chata trapera, przejście do Górskiego Miasteczka'],['Carter Hydro Dam','tama, droga do Krętej Rzeki'],['Forestry Lookout','wieża obserwacyjna na wzgórzu'],['Lake Cabins','chatki nad jeziorem'],['Alan\'s Cave','jaskinia przy torach']]},
+ ch:{n:'Autostrada Przybrzeżna',en:'Coastal Highway',d:2,x:300,y:520,t:'Zamarznięta zatoka i nadbrzeżna droga z osadą i obozem rybackim.',
+   k:[['Quonset Garage','stacja benzynowa i warsztat'],['Coastal Townsite','osada przy drodze'],['Fishing Camp','obóz rybacki na lodzie'],['Jackrabbit Island','wyspa na zatoce'],['Cinder Hills Coal Mine','kopalnia – przejście do Przyjemnej Doliny']]},
+ pv:{n:'Przyjemna Dolina',en:'Pleasant Valley',d:3,x:300,y:290,t:'Otwarte pola i długie odsłonięte trasy – częste zamiecie. Trzymaj się dróg.',
+   k:[['Pleasant Valley Farmstead','duża farma w centrum'],['Thomson\'s Crossing','kościół i domy przy moście'],['Rural Crossroads','skrzyżowanie z budynkami'],['Signal Hill','wzgórze z wieżą radiową'],['Skeeter\'s Ridge','grzbiet z chatkami']]},
+ dp:{n:'Przylądek Spustoszenia',en:'Desolation Point',d:2,x:90,y:470,up:1,t:'Zwarte wybrzeże ze starym statkiem wielorybniczym, przetwórnią i kuźnią.',
+   k:[['The Riken','wrak statku wielorybniczego'],['Hibernia Processing','przetwórnia z kuźnią'],['Lonely Lighthouse','latarnia morska'],['Stone Church','kamienny kościół'],['Abandoned Mine No. 3','kopalnia – przejście na Autostradę']]},
+ tw:{n:'Góra Wilków',en:'Timberwolf Mountain',d:3,x:180,y:160,t:'Wysoka góra z wejściem na szczyt, ostra pogoda i długie podejścia.',
+   k:[['Mountaineer\'s Hut','chata alpinisty w połowie drogi'],['Summit','szczyt z rozbitym samolotem'],['Crystal Lake','chatki nad jeziorem'],['Deer Clearing','polana – droga do Kanionu Popiołów'],['Foreman\'s Clearcut','wycinka – jaskinia do Czarnej Skały']]},
+ fm:{n:'Zapomniane Bagno',en:'Forlorn Muskeg',d:3,x:650,y:400,t:'Rozległe bagno przecięte torami, cienki lód i mało schronień.',
+   k:[['Old Spence Family Homestead','gospodarstwo Spence\'ów'],['Poacher\'s Camp','obóz kłusowników'],['Shortwave Tower','wieża krótkofalowa'],['Muskeg Overlook','punkt widokowy nad bagnem']]},
+ br:{n:'Zniszczona Kolej',en:'Broken Railroad',d:2,x:760,y:290,t:'Krótki region kolejowy z warsztatem kolejowym i domkiem myśliwskim. Brama do Far Territory.',
+   k:[['Maintenance Yard','warsztat kolejowy z kuźnią'],['Hunting Lodge','domek myśliwski'],['Far Range Branch Line','koniec torów – droga do Przełęczy Przeładunkowej']]},
+ mt:{n:'Górskie Miasteczko',en:'Mountain Town',d:1,x:580,y:260,t:'Miasteczko Milton w górskiej kotlinie. Mało drapieżników, dużo jedzenia i schronień.',
+   k:[['Milton','miasteczko z domami i sklepami'],['Grey Mother\'s House','dom Szarej Matki'],['Orca Gas Station','stacja benzynowa'],['Paradise Meadows Farm','farma na obrzeżach'],['Spruce Falls','most – w pobliżu jaskinia do Doliny Cichej Rzeki']]},
+ hr:{n:'Dolina Cichej Rzeki',en:'Hushed River Valley',d:3,x:560,y:100,t:'Odległa, wielopoziomowa dolina klifów, jaskiń i wodospadów. Prawie bez budynków – schronienia głównie w jaskiniach.',
+   k:[['Wodospady','wielopoziomowe zamarznięte wodospady'],['Jaskinie','główne schronienia regionu']]},
+ bi:{n:'Ponura Zatoka',en:'Bleak Inlet',d:3,x:610,y:575,t:'Przemysłowe wybrzeże z konserwownią, stromy teren i stada timberwolfów.',
+   k:[['Cannery','konserwownia z warsztatem'],['Cannery Workers\' Area','domki pracowników konserwowni']]},
+ ac:{n:'Kanion Popiołów',en:'Ash Canyon',d:3,x:60,y:60,t:'Głęboki kanion z płaskowyżami, mostami linowymi i niewieloma budynkami.',
+   k:[['Miner\'s Folly','stara kopalnia z chatkami'],['Angler\'s Den','chata wędkarza'],['Echo Ravine','wąwóz – droga na Górę Wilków']]},
+ bk:{n:'Czarna Skała',en:'Blackrock',d:2,x:400,y:120,t:'Pagórkowaty region z więzieniem, częstymi zamieciami i timberwolfami.',
+   k:[['Blackrock Penitentiary','więzienie'],['Blackrock (miasto)','zabudowania przy drodze'],['Keeper\'s Pass North','przejście do Przyjemnej Doliny']]},
+ tp:{n:'Przełęcz Przeładunkowa',en:'Transfer Pass',d:2,x:890,y:200,dlc:1,t:'Spokojna stacja kolejowa – węzeł łączący dolną część wyspy z trzema regionami Far Territory.',
+   k:[['Stacja kolejowa','depo – węzeł regionu'],['Zawalony tunel','obejście na drodze do Rozdartej Przełęczy']]},
+ fa:{n:'Opuszczone Lotnisko',en:'Forsaken Airfield',d:3,x:1080,y:80,dlc:1,t:'Szeroka dolina z porzuconym lotniskiem i częstą mgłą glimmer. Tu zaczyna się pierwsza Opowieść.',
+   k:[['Control Tower','wieża kontrolna – start pierwszej Opowieści'],['Fallow Dugout','w pobliżu jaskinia do Strefy Skażenia i Rozdartej Przełęczy']]},
+ zc:{n:'Strefa Skażenia',en:'Zone of Contamination',d:3,x:880,y:55,dlc:1,t:'Region kopalni odkrywkowej – strefy toksyczne i gazy kopalniane.',
+   k:[['Immutable Hesitation','tory – droga do Przełęczy Przeładunkowej'],['Enduring Waterfall','w pobliżu wspólna jaskinia przejściowa']]},
+ sp:{n:'Rozdarta Przełęcz',en:'Sundered Pass',d:3,x:1060,y:330,dlc:1,t:'Zimna przełęcz górska – stromy teren, lawiny, timberwolfy i kuguar.',
+   k:[['Stoki lawinowe','uważaj na lawiny'],['Droga za tunelem','wyjście do Przełęczy Przeładunkowej']]}
 };
 const T={
- rav:{n:'The Ravine',x:400,y:525},
- wr:{n:'Winding River',x:390,y:360},
- crh:{n:'Crumbling Hwy',x:190,y:525},
- kp:{n:"Keeper's Pass",x:350,y:205},
- fr:{n:'Far Range Branch Line',x:825,y:245},
- cave:{n:'Wspólna jaskinia',x:1115,y:215}
+ rav:{n:'Wąwóz',en:'The Ravine',x:440,y:515},
+ wr:{n:'Kręta Rzeka',en:'Winding River',x:390,y:360},
+ crh:{n:'Kruszejąca Autostrada',en:'Crumbling Highway',x:180,y:505},
+ kp:{n:'Przełęcz Strażnika',en:"Keeper's Pass",x:350,y:205},
+ fr:{n:'Bocznica Dalekiego Pasma',en:'Far Range Branch Line',x:825,y:245},
+ cave:{n:'Wspólna jaskinia',en:'transition cave',x:1115,y:215}
 };
-// [a,b,opis,dlc]
 const E=[
  ['ml','fm','bezpośrednio, tunelem kolejowym'],
- ['ml','rav','przez The Ravine'],['ch','rav','przez The Ravine'],['bi','rav','przez The Ravine'],
- ['ml','wr','przez tamę Carter Hydro i Winding River'],['pv','wr','przez Winding River i tamę Carter Hydro'],
+ ['ml','rav','przez Wąwóz'],['ch','rav','przez Wąwóz'],['bi','rav','przez Wąwóz'],
+ ['ml','wr','przez tamę Carter Hydro'],['pv','wr','przez Krętą Rzekę'],
  ['ml','mt','jaskinią koło Trapper\'s Homestead'],
  ['ch','pv','przez kopalnię Cinder Hills'],
- ['ch','crh','Crumbling Highway / kopalnia nr 3'],['dp','crh','Crumbling Highway / kopalnia nr 3'],
- ['pv','tw','wspinaczka po linie koło Prepper\'s Cache'],
- ['pv','kp',"Keeper's Pass South i North"],['bk','kp',"Keeper's Pass North i South"],
+ ['ch','crh','przez Kruszejącą Autostradę'],['dp','crh','przez kopalnię nr 3'],
+ ['pv','tw','wspinaczka po linie koło skrytki Preppera'],
+ ['pv','kp','Keeper\'s Pass South'],['bk','kp','Keeper\'s Pass North'],
  ['tw','ac','Echo Ravine lub jaskinią na wschód od Deer Clearing'],
  ['tw','bk','jaskinią koło Foreman\'s Clearcut'],
  ['fm','br','bezpośrednio'],
  ['fm','mt','przez Marsh Ridge'],
  ['fm','bi','jaskinią przejściową'],
- ['mt','hr','jaskinią między Trailerem a Spruce Falls Bridge'],
- ['br','fr','torami do końca linii',1],['tp','fr','Far Range Branch Line',1],
+ ['mt','hr','jaskinią między Trailerem a Spruce Falls'],
+ ['br','fr','torami do końca linii',1],['tp','fr','bocznicą kolejową',1],
  ['tp','fa','drogą górską',1],
  ['tp','zc','torami przy Immutable Hesitation',1],
  ['tp','sp','północną drogą za zawalonym tunelem',1],
  ['fa','cave','jaskinia na SE od Fallow Dugout',1],['zc','cave','jaskinia koło Enduring Waterfall',1],['sp','cave','wspólna jaskinia przejściowa',1]
 ];
 const P=k=>R[k]||T[k];
-const adj={};E.forEach(([a,b,t,dl],i)=>{(adj[a]=adj[a]||[]).push({to:b,t,i});(adj[b]=adj[b]||[]).push({to:a,t,i})});
+const adj={};E.forEach(([a,b,t],i)=>{(adj[a]=adj[a]||[]).push({to:b,t,i});(adj[b]=adj[b]||[]).push({to:a,t,i})});
 
-let visited={};try{visited=JSON.parse(localStorage.getItem('tld-visited')||'{}')}catch(e){}
-const saveV=()=>{try{localStorage.setItem('tld-visited',JSON.stringify(visited))}catch(e){}};
-let sel='ml',path=null,filt='all';
+const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
+const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+let visited=load('tld-visited',{}),done=load('tld-done',{}),pins=load('tld-pins',{});
+let sel='ml',path=null,filt='all',tool='shelter',cur=null;
 
-// neighbouring regions (skipping transition nodes)
 function regionNeighbours(k){
   const out=[];
   (adj[k]||[]).forEach(e=>{
     if(R[e.to])out.push({k:e.to,t:e.t,dlc:E[e.i][3]});
-    else (adj[e.to]||[]).forEach(f=>{if(f.to!==k&&R[f.to])out.push({k:f.to,t:(E[e.i][2]===E[f.i][2]?e.t:e.t),via:T[e.to].n,dlc:E[e.i][3]})});
+    else adj[e.to].forEach(f=>{if(f.to!==k&&R[f.to])out.push({k:f.to,t:e.t+(T[e.to]?'':''),via:T[e.to].n,dlc:E[e.i][3]})});
   });
   return out;
 }
 
-const svg=document.getElementById('map'),NS='http://www.w3.org/2000/svg';
-const mk=(t,a,p)=>{const el=document.createElementNS(NS,t);for(const k in a)el.setAttribute(k,a[k]);(p||svg).appendChild(el);return el};
-const col=d=>`var(--${d===1?'easy':d===2?'mid':'hard'})`;
+const NS='http://www.w3.org/2000/svg';
+const mk=(p,t,a)=>{const el=document.createElementNS(NS,t);for(const k in a)el.setAttribute(k,a[k]);p.appendChild(el);return el};
+function defs(svg,w,h){
+  svg.innerHTML=`<defs>
+   <filter id="rough${svg.id}"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3.5"/></filter>
+   <filter id="grain${svg.id}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0.16  0 0 0 0 0.14  0 0 0 0 0.12  0 0 0 0.55 0"/></filter>
+   <filter id="blur${svg.id}"><feGaussianBlur stdDeviation="5"/></filter>
+   <radialGradient id="vig${svg.id}" cx="50%" cy="50%" r="70%"><stop offset="60%" stop-color="#2a2520" stop-opacity="0"/><stop offset="100%" stop-color="#2a2520" stop-opacity=".38"/></radialGradient>
+  </defs>`;
+  mk(svg,'rect',{x:0,y:0,width:w,height:h,fill:'var(--paper)'});
+  mk(svg,'rect',{x:0,y:0,width:w,height:h,filter:`url(#grain${svg.id})`,opacity:.55});
+  mk(svg,'rect',{x:0,y:0,width:w,height:h,fill:`url(#vig${svg.id})`});
+  return mk(svg,'g',{filter:`url(#rough${svg.id})`});
+}
+function sketchLine(g,A,B,cls){
+  const mx=(A.x+B.x)/2,my=(A.y+B.y)/2,dx=B.x-A.x,dy=B.y-A.y,L=Math.hypot(dx,dy)||1;
+  const o=Math.min(18,L*.06),cx=mx-dy/L*o,cy=my+dx/L*o;
+  mk(g,'path',{d:`M${A.x} ${A.y} Q${cx} ${cy} ${B.x} ${B.y}`,class:'edge a '+cls});
+  mk(g,'path',{d:`M${A.x+1.5} ${A.y-1} Q${cx+3} ${cy-2} ${B.x-1} ${B.y+1.5}`,class:'edge b '+cls});
+}
+function compass(g,x,y){
+  mk(g,'path',{d:`M${x} ${y-34} L${x+8} ${y} L${x} ${y+34} L${x-8} ${y} Z`,fill:'none',stroke:'var(--char)','stroke-width':1.6});
+  mk(g,'path',{d:`M${x} ${y-34} L${x+8} ${y} L${x-8} ${y} Z`,fill:'var(--char)'});
+  mk(g,'path',{d:`M${x-30} ${y} L${x+30} ${y}`,stroke:'var(--char)','stroke-width':1.2});
+  const t=mk(g,'text',{x,y:y-42,'text-anchor':'middle','font-family':'Kalam, cursive','font-size':18,'font-weight':700,fill:'var(--char)'});t.textContent='N';
+}
+
+/* ---------- WIDOK WYSPY ---------- */
+const map=document.getElementById('map');
+function matches(k){const r=R[k];if(filt==='dlc')return!!r.dlc;if(filt==='nv')return!visited[k];if(filt==='all')return true;return r.d===+filt}
 function draw(){
-  svg.innerHTML='';
-  const onEdges=new Set();
-  if(path)for(let i=0;i<path.length-1;i++)(adj[path[i]]||[]).forEach(e=>{if(e.to===path[i+1])onEdges.add(e.i)});
-  const nearEdges=new Set();
-  if(!path)(adj[sel]||[]).forEach(e=>{nearEdges.add(e.i);if(T[e.to])(adj[e.to]).forEach(f=>{if(R[f.to])nearEdges.add(f.i)})});
-  E.forEach(([a,b,t,dl],i)=>{const A=P(a),B=P(b);mk('line',{x1:A.x,y1:A.y,x2:B.x,y2:B.y,class:'edge'+(dl?' dlc':'')+(onEdges.has(i)?' on':nearEdges.has(i)?' near':'')})});
-  for(const k in T){const t=T[k];const g=mk('g',{class:'tz'+(path&&path.includes(k)?' onpath':'')});
-    mk('rect',{x:t.x-6,y:t.y-6,width:12,height:12,transform:`rotate(45 ${t.x} ${t.y})`},g);
-    const tx=mk('text',{x:t.x,y:t.y+22,'text-anchor':'middle'},g);tx.textContent=t.n}
-  const near=new Set(regionNeighbours(sel).map(n=>n.k));
+  const g=defs(map,1180,640);
+  compass(g,1130,560);
+  const lt=mk(g,'text',{x:30,y:612,'font-family':'Kalam, cursive','font-size':22,fill:'var(--char-2)'});lt.textContent='Wielki Niedźwiedź';
+  const on=new Set(),near=new Set();
+  if(path)for(let i=0;i<path.length-1;i++)adj[path[i]].forEach(e=>{if(e.to===path[i+1])on.add(e.i)});
+  else adj[sel].forEach(e=>{near.add(e.i);if(T[e.to])adj[e.to].forEach(f=>{if(R[f.to])near.add(f.i)})});
+  E.forEach(([a,b,t,dl],i)=>sketchLine(g,P(a),P(b),(dl?'dlc ':'')+(on.has(i)?'on':near.has(i)?'near':'')));
+  for(const k in T){const t=T[k],tg=mk(g,'g',{class:'tz'+(path&&path.includes(k)?' onpath':'')});
+    mk(tg,'path',{d:`M${t.x} ${t.y-8} L${t.x+8} ${t.y} L${t.x} ${t.y+8} L${t.x-8} ${t.y} Z`});
+    const tx=mk(tg,'text',{x:t.x,y:t.y+24,'text-anchor':'middle'});tx.textContent=t.n}
+  // glows pod szkicem (bez filtra drgań)
   for(const k in R){const r=R[k];
-    const dim=(filt!=='all'&&!matches(k));
-    const g=mk('g',{class:'node'+(k===sel?' sel':'')+(path&&path.includes(k)?' onpath':'')+(dim?' dim':''),tabindex:0,role:'button','aria-label':r.n});
-    mk('circle',{cx:r.x,cy:r.y,r:20,class:'ring'},g);
-    mk('circle',{cx:r.x,cy:r.y,r:13,class:'c',fill:col(r.d)},g);
-    if(visited[k]){const c=mk('text',{x:r.x,y:r.y+4.5,'text-anchor':'middle',class:'tick'},g);c.textContent='✓'}
-    const anchor=r.x<120?'start':r.x>1000?'end':'middle';const lx=r.x<120?r.x-12:r.x>1000?r.x+14:r.x;
-    const tx=mk('text',{x:lx,y:r.y+(r.y<70?-26:36),'text-anchor':anchor},g);tx.textContent=r.n;
-    g.addEventListener('click',()=>select(k));
-    g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select(k)}});
+    const ng=mk(map,'g',{class:'node'+(k===sel?' sel':'')+(path&&path.includes(k)?' onpath':'')+(filt!=='all'&&!matches(k)?' dim':''),tabindex:0,role:'button','aria-label':r.n+' ('+r.en+')'});
+    mk(ng,'circle',{cx:r.x,cy:r.y,r:24,class:'glow',filter:`url(#blur${map.id})`});
+    const rg=mk(ng,'g',{filter:`url(#rough${map.id})`});
+    mk(rg,'circle',{cx:r.x,cy:r.y,r:14,fill:'var(--paper)',stroke:'var(--char)','stroke-width':2.6});
+    mk(rg,'circle',{cx:r.x,cy:r.y,r:8,fill:DC[r.d]});
+    if(visited[k]){const c=mk(ng,'text',{x:r.x+13,y:r.y-12,class:'tick'});c.textContent='✓'}
+    const anchor=r.x<120?'start':r.x>1000?'end':'middle',lx=r.x<120?r.x-14:r.x>1000?r.x+14:r.x;
+    const tx=mk(ng,'text',{x:lx,y:r.y+(r.y<110||r.up?-24:38),'text-anchor':anchor,class:'n'});tx.textContent=r.n;
+    ng.addEventListener('click',()=>select(k));
+    ng.addEventListener('dblclick',()=>openRegion(k));
+    ng.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select(k)}});
   }
 }
+function tagsHTML(r){return `<div class="tags"><span class="tag t${r.d}">${DN[r.d]}</span>${r.dlc?'<span class="tag tdlc">Far Territory</span>':'<span class="tag tbase">gra podstawowa</span>'}</div>`}
+function connsHTML(k){const nb=regionNeighbours(k);
+  return `<div><p class="lbl">Połączenia · ${nb.length}</p><ul class="conns">${nb.map(n=>`<li><button data-k="${n.k}">${R[n.k].n}</button><small>${n.via&&!n.t.includes(n.via)?n.via+' · ':''}${n.t}${n.dlc?' · DLC':''}</small></li>`).join('')}</ul></div>`}
 function select(k){sel=k;path=null;renderPanel();draw()}
 function renderPanel(){
   const r=R[sel],p=document.getElementById('panel');
-  const nb=regionNeighbours(sel);
-  p.innerHTML=`<div><p class="lbl">Region</p><h3>${r.n}</h3></div>
-  <div class="tags"><span class="tag d${r.d}">${DN[r.d]}</span>${r.dlc?'<span class="tag dlc">Tales from the Far Territory</span>':'<span class="tag" style="color:var(--ink-2)">gra podstawowa</span>'}</div>
-  <p>${r.t}</p>
+  p.innerHTML=`<div><p class="lbl">Region</p><h3>${r.n}</h3><div class="en">${r.en}</div></div>${tagsHTML(r)}<p>${r.t}</p>
+  <button class="btn primary" id="open">Otwórz mapę regionu →</button>
   <label class="check"><input type="checkbox" id="vis" ${visited[sel]?'checked':''}> Byłem tu</label>
-  <div><p class="lbl">Połączenia (${nb.length})</p><ul class="conns">${nb.map(n=>`<li><button data-k="${n.k}">${R[n.k].n}</button><small>${n.t}${n.dlc?' · DLC':''}</small></li>`).join('')}</ul></div>
-  <div class="row"><a class="btn primary" href="${EXT}" target="_blank" rel="noopener">Mapa lokacji ↗</a><a class="btn" href="${wiki(r.n)}" target="_blank" rel="noopener">Wiki ↗</a></div>
+  ${connsHTML(sel)}
   <div class="row"><button class="btn" id="asFrom">Trasa stąd</button><button class="btn" id="asTo">Trasa tutaj</button></div>`;
   p.querySelectorAll('.conns button').forEach(b=>b.onclick=()=>select(b.dataset.k));
-  p.querySelector('#vis').onchange=e=>{if(e.target.checked)visited[sel]=1;else delete visited[sel];saveV();draw();renderGrid()};
-  p.querySelector('#asFrom').onclick=()=>{fromS.value=sel;route();document.getElementById('rh').scrollIntoView({behavior:'smooth',block:'start'})};
-  p.querySelector('#asTo').onclick=()=>{toS.value=sel;route();document.getElementById('rh').scrollIntoView({behavior:'smooth',block:'start'})};
+  p.querySelector('#open').onclick=()=>openRegion(sel);
+  p.querySelector('#vis').onchange=e=>{e.target.checked?visited[sel]=1:delete visited[sel];save('tld-visited',visited);draw();renderGrid()};
+  p.querySelector('#asFrom').onclick=()=>{fromS.value=sel;route(true)};
+  p.querySelector('#asTo').onclick=()=>{toS.value=sel;route(true)};
 }
+
+/* ---------- WIDOK REGIONU ---------- */
+const rmap=document.getElementById('rmap');
+function openRegion(k){location.hash=k}
+function showView(){
+  const k=location.hash.slice(1);
+  const reg=R[k];
+  document.getElementById('vIsland').hidden=!!reg;
+  document.getElementById('vRegion').hidden=!reg;
+  document.getElementById('listSec').hidden=!!reg;
+  document.getElementById('subt').textContent=reg?reg.n:'Mapa wyspy';
+  document.title=reg?reg.n+' – Wielki Niedźwiedź':'Wielki Niedźwiedź – mapa';
+  if(reg){cur=k;sel=k;drawRegion();renderRPanel();window.scrollTo({top:0})}
+  else{cur=null;renderPanel();draw()}
+}
+window.addEventListener('hashchange',showView);
+document.getElementById('back').onclick=()=>{history.replaceState(null,'',location.pathname);showView()};
+
+const SYM={shelter:'⌂',res:'○',danger:'✕',note:'•'};
+const SYMN={shelter:'schronienie',res:'zasoby',danger:'niebezpieczeństwo',note:'notatka'};
+function drawRegion(){
+  const k=cur,r=R[k];
+  const g=defs(rmap,1000,640);
+  mk(g,'rect',{x:24,y:24,width:952,height:592,fill:'none',stroke:'var(--char)','stroke-width':1.4,opacity:.55});
+  compass(g,930,90);
+  const tt=mk(rmap,'text',{x:500,y:300,'text-anchor':'middle',class:'lbl-big','font-size':44,'font-weight':700,opacity:.85});tt.textContent=r.n;
+  const te=mk(rmap,'text',{x:500,y:332,'text-anchor':'middle',class:'lbl-big','font-size':18,fill:'var(--char-2)'});te.textContent=r.en;
+  const pr=pins[k]||[];
+  if(!pr.length){const h=mk(rmap,'text',{x:500,y:380,'text-anchor':'middle',class:'lbl-big','font-size':16,fill:'var(--char-2)'});h.textContent='Kliknij na arkuszu, aby postawić pinezkę – narysuj własną mapę jak węglem w grze.'}
+  // wyjścia
+  const cx=500,cy=320;
+  adj[k].forEach(e=>{
+    const B=P(e.to),A=r;let dx=B.x-A.x,dy=B.y-A.y;const L=Math.hypot(dx,dy);dx/=L;dy/=L;
+    const t=Math.min(440/Math.abs(dx||1e-6),260/Math.abs(dy||1e-6));
+    const ex=cx+dx*t,ey=cy+dy*t,ix=cx+dx*(t-70),iy=cy+dy*(t-70);
+    const eg=mk(rmap,'g',{class:'ex'});
+    const lg=mk(eg,'g',{filter:`url(#rough${rmap.id})`});
+    mk(lg,'path',{d:`M${ix} ${iy} L${ex} ${ey}`,stroke:'var(--char)','stroke-width':2.6,fill:'none','stroke-dasharray':E[e.i][3]?'7 6':null});
+    const ang=Math.atan2(dy,dx),ah=12;
+    mk(lg,'path',{d:`M${ex-ah*Math.cos(ang-0.5)} ${ey-ah*Math.sin(ang-0.5)} L${ex} ${ey} L${ex-ah*Math.cos(ang+0.5)} ${ey-ah*Math.sin(ang+0.5)}`,stroke:'var(--char)','stroke-width':2.6,fill:'none'});
+    const dests=R[e.to]?[e.to]:adj[e.to].map(f=>f.to).filter(x=>x!==k&&R[x]);
+    const anchor=dx>0.35?'end':dx<-0.35?'start':'middle';
+    const lx=ix-dx*8,ly0=iy-dy*8+(dy<-0.3?-6:dy>0.3?-((dests.length+ (T[e.to]?1:0))*20)+6:-8);
+    let ly=ly0;
+    if(T[e.to]){const v=mk(eg,'text',{x:lx,y:ly,'text-anchor':anchor,class:'via'});v.textContent='◇ '+T[e.to].n;ly+=20}
+    dests.forEach(d=>{const tx=mk(eg,'text',{x:lx,y:ly,'text-anchor':anchor,tabindex:0,role:'link'});tx.textContent='→ '+R[d].n;
+      tx.addEventListener('click',ev=>{ev.stopPropagation();openRegion(d)});
+      tx.addEventListener('keydown',ev=>{if(ev.key==='Enter')openRegion(d)});ly+=20});
+  });
+  // pinezki
+  pr.forEach((p,i)=>{const pg=mk(rmap,'g',{class:'pin'});
+    const sg=mk(pg,'g',{filter:`url(#rough${rmap.id})`,stroke:'var(--char)','stroke-width':2.4,fill:'none','stroke-linecap':'round'});
+    if(p.type==='shelter')mk(sg,'path',{d:`M${p.x-10} ${p.y+9} V${p.y-2} L${p.x} ${p.y-11} L${p.x+10} ${p.y-2} V${p.y+9} Z`,fill:'var(--paper)'});
+    else if(p.type==='res')mk(sg,'circle',{cx:p.x,cy:p.y,r:9});
+    else if(p.type==='danger')mk(sg,'path',{d:`M${p.x-9} ${p.y-9} L${p.x+9} ${p.y+9} M${p.x+9} ${p.y-9} L${p.x-9} ${p.y+9}`,stroke:'var(--hard)','stroke-width':3});
+    else mk(sg,'circle',{cx:p.x,cy:p.y,r:5,fill:'var(--char)'});
+    if(p.note){const n=mk(pg,'text',{x:p.x+16,y:p.y+5});n.textContent=p.note}
+    pg.addEventListener('click',ev=>ev.stopPropagation());
+  });
+}
+rmap.addEventListener('click',ev=>{
+  if(!cur)return;const pt=rmap.createSVGPoint();pt.x=ev.clientX;pt.y=ev.clientY;
+  const p=pt.matrixTransform(rmap.getScreenCTM().inverse());
+  const note=(document.getElementById('pnote')||{}).value||'';
+  (pins[cur]=pins[cur]||[]).push({x:Math.round(p.x),y:Math.round(p.y),type:tool,note:note.trim()});
+  save('tld-pins',pins);const ni=document.getElementById('pnote');if(ni)ni.value='';drawRegion();renderRPanel();
+});
+function renderRPanel(){
+  const k=cur,r=R[k],p=document.getElementById('rpanel'),pr=pins[k]||[],dn=done[k]||{};
+  p.innerHTML=`<div><p class="lbl">Region</p><h3>${r.n}</h3><div class="en">${r.en}</div></div>${tagsHTML(r)}<p>${r.t}</p>
+  <label class="check"><input type="checkbox" id="rvis" ${visited[k]?'checked':''}> Byłem tu</label>
+  <div><p class="lbl">Ważne miejsca</p><ul class="places">${r.k.map((x,i)=>`<li><label><input type="checkbox" data-i="${i}" ${dn[i]?'checked':''}><span class="${dn[i]?'done':''}">${x[0]}<small>${x[1]}</small></span></label></li>`).join('')}</ul></div>
+  <div><p class="lbl">Pinezki</p>
+    <div class="tools" role="group" aria-label="Rodzaj pinezki">${Object.keys(SYM).map(s=>`<button class="btn" data-t="${s}" aria-pressed="${s===tool}">${SYM[s]} ${SYMN[s]}</button>`).join('')}</div>
+    <div style="margin-top:8px"><input type="text" id="pnote" placeholder="Podpis (opcjonalnie), potem kliknij na arkuszu" maxlength="40"></div>
+    ${pr.length?`<ul class="pins" style="margin-top:10px">${pr.map((x,i)=>`<li><span>${SYM[x.type]} ${x.note||SYMN[x.type]}</span><button data-d="${i}">usuń</button></li>`).join('')}</ul><div class="row" style="margin-top:8px"><button class="btn" id="clr">Wyczyść pinezki</button></div>`:'<p class="hint" style="margin-top:8px">Brak pinezek w tym regionie.</p>'}
+  </div>
+  ${connsHTML(k)}`;
+  p.querySelector('#rvis').onchange=e=>{e.target.checked?visited[k]=1:delete visited[k];save('tld-visited',visited)};
+  p.querySelectorAll('.places input').forEach(c=>c.onchange=()=>{done[k]=done[k]||{};c.checked?done[k][c.dataset.i]=1:delete done[k][c.dataset.i];save('tld-done',done);renderRPanel()});
+  p.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{tool=b.dataset.t;p.querySelectorAll('[data-t]').forEach(x=>x.setAttribute('aria-pressed',x===b))});
+  p.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{pins[k].splice(+b.dataset.d,1);save('tld-pins',pins);drawRegion();renderRPanel()});
+  const clr=p.querySelector('#clr');if(clr)clr.onclick=()=>{if(clr.dataset.ok){pins[k]=[];save('tld-pins',pins);drawRegion();renderRPanel()}else{clr.dataset.ok=1;clr.textContent='Na pewno? Kliknij ponownie'}};
+  p.querySelectorAll('.conns button').forEach(b=>b.onclick=()=>openRegion(b.dataset.k));
+}
+
+/* ---------- PLANER TRASY ---------- */
 const fromS=document.getElementById('from'),toS=document.getElementById('to');
-const opts=Object.keys(R).sort((a,b)=>R[a].n.localeCompare(R[b].n)).map(k=>`<option value="${k}">${R[k].n}</option>`).join('');
+const opts=Object.keys(R).sort((a,b)=>R[a].n.localeCompare(R[b].n,'pl')).map(k=>`<option value="${k}">${R[k].n}</option>`).join('');
 fromS.innerHTML=opts;toS.innerHTML=opts;fromS.value='ml';toS.value='bk';
-function bfs(a,b){const prev={[a]:null},q=[a];while(q.length){const c=q.shift();if(c===b)break;(adj[c]||[]).forEach(e=>{if(!(e.to in prev)){prev[e.to]=c;q.push(e.to)}})}
+function bfs(a,b){const prev={[a]:null},q=[a];while(q.length){const c=q.shift();if(c===b)break;adj[c].forEach(e=>{if(!(e.to in prev)){prev[e.to]=c;q.push(e.to)}})}
   if(!(b in prev))return null;const out=[];for(let c=b;c!==null;c=prev[c])out.unshift(c);return out}
-function route(){
+function route(scroll){
   const a=fromS.value,b=toS.value,o=document.getElementById('rout');
+  if(location.hash&&scroll!=='init'){history.replaceState(null,'',location.pathname);showView()}
   if(a===b){o.innerHTML='<p class="note">Wybierz dwa różne regiony.</p>';path=null;draw();return}
   path=bfs(a,b);
   const regs=path.filter(k=>R[k]).length;
-  const notes=[];for(let i=0;i<path.length-1;i++){const e=adj[path[i]].find(x=>x.to===path[i+1]);if(R[path[i]]&&R[path[i+1]]||T[path[i+1]])notes.push(`<b>${P(path[i]).n} → ${P(path[i+1]).n}:</b> ${e.t}`)}
+  const notes=[];for(let i=0;i<path.length-1;i++){const e=adj[path[i]].find(x=>x.to===path[i+1]);notes.push(`<b>${P(path[i]).n} → ${P(path[i+1]).n}:</b> ${e.t}`)}
   const dlc=path.some(k=>R[k]&&R[k].dlc)||path.includes('fr');
+  const ch=regs-1;
   o.innerHTML=`<div class="steps">${path.map((k,i)=>`${i?'<span class="arrow">→</span>':''}<span class="step${T[k]?' t':''}">${P(k).n}</span>`).join('')}</div>
-  <p class="note">${regs-1} ${regs-1===1?'zmiana regionu':'zmiany regionu'} · ${regs} regiony po drodze${dlc?' · wymaga DLC Far Territory':''}</p>
-  <div class="note" style="display:grid;gap:3px">${notes.join('<br>')}</div>`;
+  <p class="note">${ch} ${ch===1?'zmiana regionu':ch<5?'zmiany regionu':'zmian regionu'}${dlc?' · wymaga DLC Far Territory':''}</p>
+  <div class="note" style="display:grid;gap:4px">${notes.map(n=>`<div>${n}</div>`).join('')}</div>`;
   sel=a;renderPanel();draw();
+  if(scroll===true)document.getElementById('rh').scrollIntoView({behavior:'smooth',block:'start'});
 }
 fromS.onchange=route;toS.onchange=route;
 document.getElementById('swap').onclick=()=>{const t=fromS.value;fromS.value=toS.value;toS.value=t;route()};
 
-function matches(k){const r=R[k];
-  if(filt==='dlc')return !!r.dlc; if(filt==='nv')return !visited[k];
-  if(filt==='all')return true; return r.d===+filt}
+/* ---------- LISTA ---------- */
 const q=document.getElementById('q');
 function renderGrid(){
   const s=q.value.trim().toLowerCase();
-  const ks=Object.keys(R).filter(k=>matches(k)&&(!s||R[k].n.toLowerCase().includes(s)));
-  document.getElementById('grid').innerHTML=ks.length?ks.map(k=>{const r=R[k];const nb=regionNeighbours(k);
-    return `<button class="card b${r.d}" data-k="${k}"><h4>${r.n}${visited[k]?'<span class="v">✓ odwiedzony</span>':''}</h4><span class="meta">${DN[r.d]} · ${nb.length} połącz.${r.dlc?' · DLC':''}</span><p>${r.t}</p></button>`}).join(''):'<p class="empty">Brak regionów dla tego filtra.</p>';
-  document.querySelectorAll('.card').forEach(c=>c.onclick=()=>{select(c.dataset.k);document.querySelector('.main').scrollIntoView({behavior:'smooth',block:'start'})});
+  const ks=Object.keys(R).filter(k=>matches(k)&&(!s||R[k].n.toLowerCase().includes(s)||R[k].en.toLowerCase().includes(s)));
+  document.getElementById('grid').innerHTML=ks.length?ks.map(k=>{const r=R[k];
+    return `<button class="card" style="--c:${TC[r.d]}" data-k="${k}"><h4>${r.n}${visited[k]?'<span class="v">✓ byłem</span>':''}</h4><span class="meta">${r.en} · ${DN[r.d]}${r.dlc?' · DLC':''}</span><p>${r.t}</p></button>`}).join(''):'<p class="empty">Brak regionów dla tego filtra.</p>';
+  document.querySelectorAll('.card').forEach(c=>c.onclick=()=>openRegion(c.dataset.k));
 }
-document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{filt=c.dataset.f;document.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',x===c));renderGrid();draw()});
+document.querySelectorAll('[data-f]').forEach(c=>c.onclick=()=>{filt=c.dataset.f;document.querySelectorAll('[data-f]').forEach(x=>x.setAttribute('aria-pressed',x===c));renderGrid();draw()});
 q.oninput=renderGrid;
-renderPanel();draw();renderGrid();
+
+/* ---------- ŚNIEG ---------- */
+(function(){
+  const c=document.getElementById('snow'),x=c.getContext('2d');let W,H,f=[];
+  const still=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function size(){W=c.width=innerWidth*devicePixelRatio;H=c.height=innerHeight*devicePixelRatio;
+    f=Array.from({length:Math.round(innerWidth/9)},()=>({x:Math.random()*W,y:Math.random()*H,r:(Math.random()*1.8+.4)*devicePixelRatio,s:Math.random()*.6+.25,w:Math.random()*Math.PI*2}))}
+  function frame(){x.clearRect(0,0,W,H);x.fillStyle='rgba(223,232,234,.75)';
+    for(const p of f){x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill();
+      if(!still){p.y+=p.s*devicePixelRatio*(p.r);p.w+=.01;p.x+=Math.sin(p.w)*.4-.25;if(p.y>H){p.y=-5;p.x=Math.random()*W}if(p.x<0)p.x=W}}
+    if(!still)requestAnimationFrame(frame)}
+  addEventListener('resize',size);size();frame();
+})();
+
+renderGrid();route('init');showView();
 </script>
 </body>
 </html>

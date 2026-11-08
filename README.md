@@ -1,12 +1,10 @@
 # TLD-map
 
-Przejrzysta mapa połączeń regionów **The Long Dark** (Wielki Niedźwiedź + Tales from the Far Territory):
+Samodzielna mapa regionów **The Long Dark** (Wielki Niedźwiedź + Tales from the Far Territory) w stylu mapy rysowanej węglem.
 
-- klikalny schemat 16 regionów i stref przejściowych,
-- panel regionu: trudność, opis, połączenia (którędy przejść), linki do mapy interaktywnej i wiki,
-- planer trasy (najkrótsza droga z regionu A do B),
-- znaczniki „Byłem tu” (zapis w przeglądarce), filtry i wyszukiwarka.
+- szkic wyspy: 16 regionów i strefy przejściowe, polskie nazwy (pod spodem oryginalne z gry),
+- arkusz każdego regionu (`#ml`, `#pv` …): wyjścia do sąsiednich regionów, własne pinezki z podpisami, lista ważnych miejsc do odhaczania,
+- planer trasy (najkrótsza droga z A do B),
+- „Byłem tu”, filtry, wyszukiwarka (PL/EN).
 
-Mapy lokacji: [TLD Interactive Map](https://elektronixx.github.io/TLD-Interactive-Map/) (elektronixx).
-
-Strona statyczna — Netlify publikuje katalog główny (`netlify.toml`), bez builda.
+Wszystko zapisuje się lokalnie w przeglądarce. Strona statyczna — Netlify publikuje katalog główny (`netlify.toml`), bez builda.
