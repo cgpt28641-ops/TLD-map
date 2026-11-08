@@ -136,6 +136,28 @@ input[type=text]{width:100%}
 footer{font-size:13px;color:var(--frost-2);border-top:1px solid var(--hair);padding-top:14px}
 .back{justify-self:start}
 @media (prefers-reduced-motion:no-preference){.node .glow{transition:opacity .25s}.edge{transition:stroke .2s,opacity .2s}}
+
+.vbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.seg{display:flex;gap:0}
+.seg .btn{border-radius:0}.seg .btn+.btn{border-left:0}
+.seg .btn[aria-pressed="true"]{background:var(--frost);color:var(--night);border-color:var(--frost)}
+.viewer{position:relative;height:min(78vh,780px);min-height:360px;background:#0a0a0a;overflow:hidden;touch-action:none;cursor:grab;border-radius:3px;box-shadow:0 18px 50px rgba(0,0,0,.6);user-select:none}
+.viewer.drag{cursor:grabbing}.viewer.pinmode{cursor:crosshair}
+.layer{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
+.layer img{display:block;max-width:none;width:auto;height:auto;pointer-events:none}
+.vstatus{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;font:400 14px var(--ui);letter-spacing:.18em;text-transform:uppercase;color:var(--frost-2);pointer-events:none}
+.vctrl{position:absolute;right:12px;top:12px;display:grid;gap:6px}
+.vctrl .btn{width:40px;height:40px;justify-content:center;padding:0;font-size:20px;background:rgba(9,17,22,.8)}
+.vhint{position:absolute;left:12px;bottom:12px;font:400 11px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--frost);background:rgba(9,17,22,.75);padding:6px 10px;border-radius:2px;pointer-events:none}
+.mpin{position:absolute;left:0;top:0;transform-origin:0 0;pointer-events:none}
+.mpin span{position:absolute;left:0;top:0;transform:translate(-50%,-50%);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.mpin i{font-style:normal;width:26px;height:26px;display:grid;place-items:center;border-radius:50%;background:var(--ember);color:#111;font:600 15px var(--ui);box-shadow:0 0 0 2px #111,0 2px 8px rgba(0,0,0,.6)}
+.mpin.danger i{background:#e07a62}.mpin.res i{background:#a9bd73}.mpin.note i{background:var(--frost)}
+.mpin b{font:500 13px var(--ui);letter-spacing:.06em;text-transform:uppercase;background:var(--tag);color:#141312;padding:2px 7px}
+.credit{margin:0;font-size:12.5px;color:var(--frost-2)}
+.credit a{color:var(--frost)}
+.extras{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tz{cursor:pointer}
 </style>
 </head>
 <body>
@@ -148,6 +170,13 @@ footer{font-size:13px;color:var(--frost-2);border-top:1px solid var(--hair);padd
   </header>
 
   <!-- WIDOK WYSPY -->
+  <div class="extras" id="extras">
+    <span class="lbl" style="margin:0">Mapy szczegółowe:</span>
+    <button class="btn" data-open="world">Cały świat</button>
+    <button class="btn" data-open="conn">Połączenia regionów</button>
+    <button class="btn" data-open="lm">Kopalnia Langston</button>
+    <span class="hint">albo kliknij region lub strefę na szkicu poniżej</span>
+  </div>
   <div id="vIsland" class="main">
     <div class="sheet">
       <div class="sheetscroll"><svg id="map" viewBox="0 0 1180 640" role="img" aria-label="Szkic połączeń regionów Wielkiego Niedźwiedzia"></svg></div>
@@ -168,14 +197,28 @@ footer{font-size:13px;color:var(--frost-2);border-top:1px solid var(--hair);padd
   <div id="vRegion" hidden>
     <div class="main">
       <div style="display:grid;gap:12px;min-width:0">
-        <button class="btn back" id="back">← Mapa wyspy</button>
-        <div class="sheet">
-          <div class="sheetscroll"><svg id="rmap" viewBox="0 0 1000 640" role="img" aria-label="Arkusz regionu"></svg></div>
-          <div class="legend">
-            <span>⌂ schronienie</span><span>○ zasoby</span><span>✕ niebezpieczeństwo</span><span>• notatka</span>
-            <span>strzałki = wyjścia do sąsiednich regionów</span>
+        <div class="vbar">
+          <button class="btn back" id="back">← Mapa wyspy</button>
+          <div class="seg" role="group" aria-label="Wersja mapy">
+            <button class="btn" data-v="pilgrim">Pilgrim – Stalker</button>
+            <button class="btn" data-v="interloper">Interloper – Misery</button>
+          </div>
+          <div class="seg" role="group" aria-label="Warstwa" id="layerSeg" hidden>
+            <button class="btn" data-l="map">Mapa</button>
+            <button class="btn" data-l="loc">Lokacje opowieści</button>
           </div>
         </div>
+        <div class="viewer" id="viewer" aria-label="Interaktywna mapa regionu">
+          <div class="layer" id="layer"><img id="mimg" alt="" draggable="false"><div id="pinsLayer"></div></div>
+          <div class="vstatus" id="vstatus">Wczytywanie mapy…</div>
+          <div class="vctrl">
+            <button class="btn" id="zin" aria-label="Przybliż">+</button>
+            <button class="btn" id="zout" aria-label="Oddal">−</button>
+            <button class="btn" id="zfit" aria-label="Dopasuj">⤢</button>
+          </div>
+          <div class="vhint" id="vhint">Przeciągnij, aby przesunąć · kółko lub szczypanie, aby przybliżyć</div>
+        </div>
+        <p class="credit" id="credit"></p>
       </div>
       <aside class="panel" id="rpanel"></aside>
     </div>
@@ -208,6 +251,7 @@ footer{font-size:13px;color:var(--frost-2);border-top:1px solid var(--hair);padd
   <footer>Polskie nazwy regionów to tłumaczenia robocze – pod każdą jest oryginalna nazwa z gry. Odwiedzone regiony, odhaczone miejsca i pinezki zapisują się tylko w tej przeglądarce.</footer>
 </div>
 
+<script src="data/maps-fallback.js"></script>
 <script>
 const DN={1:'łatwy',2:'średni',3:'trudny'};
 const DC={1:'var(--easy)',2:'var(--mid)',3:'var(--hard)'};
@@ -375,7 +419,7 @@ function draw(){
   E.forEach(([a,b,t,dl],i)=>sketchLine(g,P(a),P(b),(dl&&!isRail(a,b)?'dlc ':'')+(on.has(i)?'on':near.has(i)?'near':''),isRail(a,b)));
   for(const k in T){const t=T[k],tg=mk(map,'g',{class:'tz'+(path&&path.includes(k)?' onpath':'')});
     mk(tg,'path',{d:`M${t.x} ${t.y-8} L${t.x+8} ${t.y} L${t.x} ${t.y+8} L${t.x-8} ${t.y} Z`});
-    tag(tg,t.x<120?t.x-6:t.x,t.up?t.y-16:t.y+26,t.n,t.x<120?'start':'middle','s')}
+    tag(tg,t.x<120?t.x-6:t.x,t.up?t.y-16:t.y+26,t.n,t.x<120?'start':'middle','s');tg.addEventListener('click',()=>openRegion(k))}
   // glows pod szkicem (bez filtra drgań)
   for(const k in R){const r=R[k];
     const ng=mk(map,'g',{class:'node'+(k===sel?' sel':'')+(path&&path.includes(k)?' onpath':'')+(filt!=='all'&&!matches(k)?' dim':''),tabindex:0,role:'button','aria-label':r.n+' ('+r.en+')'});
@@ -399,7 +443,7 @@ function select(k){sel=k;path=null;renderPanel();draw()}
 function renderPanel(){
   const r=R[sel],p=document.getElementById('panel');
   p.innerHTML=`<div><p class="lbl">Region</p><h3>${r.n}</h3><div class="en">${r.en}</div></div>${tagsHTML(r)}<p>${r.t}</p>
-  <button class="btn primary" id="open">Otwórz mapę regionu →</button>
+  <button class="btn primary" id="open">Otwórz mapę szczegółową →</button>
   <label class="check"><input type="checkbox" id="vis" ${visited[sel]?'checked':''}> Byłem tu</label>
   ${connsHTML(sel)}
   <div class="row"><button class="btn" id="asFrom">Trasa stąd</button><button class="btn" id="asTo">Trasa tutaj</button></div>`;
@@ -411,87 +455,100 @@ function renderPanel(){
 }
 
 /* ---------- WIDOK REGIONU ---------- */
-const rmap=document.getElementById('rmap');
+/* ---------- MAPY SZCZEGÓŁOWE ---------- */
+const MK={ml:'mystery-lake',ch:'coastal-highway',pv:'pleasant-valley',dp:'desolation-point',tw:'timberwolf-mountain',fm:'forlorn-muskeg',br:'broken-railroad',mt:'mountain-town',hr:'hushed-river-valley',bi:'bleak-inlet',ac:'ash-canyon',bk:'blackrock',tp:'transfer-pass',fa:'forsaken-airfield',zc:'zone-of-contamination',sp:'sundered-pass',
+  rav:'ravine',wr:'winding-river-&-carter-hydro-dam',crh:'crumbling-highway',kp:'keepers-pass',fr:'far-range-branch-line',cave:'transition-cave',world:'game-world',conn:'connections-between-regions',lm:'langston-mine'};
+const X={world:{n:'Cały świat',en:'Game world'},conn:{n:'Połączenia regionów',en:'Connections between regions'},lm:{n:'Kopalnia Langston',en:'Langston Mine'}};
+let MAPS=window.TLD_MAPS_FALLBACK||{};
+fetch('data/maps.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(j=>{if(j)MAPS=j}).catch(()=>{});
+let variant=load('tld-variant','pilgrim'),layerSel='map';
+let pins2=load('tld-pins2',{}),pinMode=false;
+const Q=k=>R[k]||T[k]||X[k];
 function openRegion(k){location.hash=k}
+document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openRegion(b.dataset.open));
 function showView(){
-  const k=location.hash.slice(1);
-  const reg=R[k];
-  document.getElementById('vIsland').hidden=!!reg;
-  document.getElementById('vRegion').hidden=!reg;
-  document.getElementById('listSec').hidden=!!reg;
-  document.getElementById('subt').textContent=reg?reg.n:'Mapa wyspy';
-  document.title=reg?reg.n+' – Wielki Niedźwiedź':'Wielki Niedźwiedź – mapa';
-  if(reg){cur=k;sel=k;drawRegion();renderRPanel();window.scrollTo({top:0})}
+  const k=location.hash.slice(1),it=Q(k);
+  document.getElementById('vIsland').hidden=!!it;
+  document.getElementById('extras').hidden=!!it;
+  document.getElementById('vRegion').hidden=!it;
+  document.getElementById('listSec').hidden=!!it;
+  document.getElementById('routeSec').hidden=!!it;
+  document.getElementById('subt').textContent=it?it.n:'Mapa wyspy';
+  document.title=it?it.n+' – Wielki Niedźwiedź':'Wielki Niedźwiedź – mapa';
+  if(it){cur=k;if(R[k])sel=k;layerSel='map';pinMode=false;loadMap();renderRPanel();window.scrollTo({top:0})}
   else{cur=null;renderPanel();draw()}
 }
 window.addEventListener('hashchange',showView);
 document.getElementById('back').onclick=()=>{history.replaceState(null,'',location.pathname);showView()};
 
+/* przeglądarka mapy: przesuwanie, zoom kółkiem i szczypaniem */
+const viewer=document.getElementById('viewer'),layer=document.getElementById('layer'),img=document.getElementById('mimg'),vstatus=document.getElementById('vstatus'),pinsLayer=document.getElementById('pinsLayer');
+let V={s:1,x:0,y:0,fit:1,iw:0,ih:0};
+function apply(){layer.style.transform=`translate(${V.x}px,${V.y}px) scale(${V.s})`;
+  pinsLayer.querySelectorAll('.mpin').forEach(p=>p.style.transform=`translate(${p.dataset.x*V.iw}px,${p.dataset.y*V.ih}px) scale(${1/V.s})`)}
+function fit(){const W=viewer.clientWidth,H=viewer.clientHeight;if(!V.iw)return;V.fit=Math.min(W/V.iw,H/V.ih);V.s=V.fit;V.x=(W-V.iw*V.s)/2;V.y=(H-V.ih*V.s)/2;apply()}
+function zoomAt(f,cx,cy){const ns=Math.max(V.fit*.6,Math.min(V.fit*14,V.s*f));const k=ns/V.s;V.x=cx-(cx-V.x)*k;V.y=cy-(cy-V.y)*k;V.s=ns;apply()}
+function mapKey(){const base=MK[cur];if(layerSel==='loc'&&MAPS[base+'-map-locations'])return base+'-map-locations';return base}
+function loadMap(){
+  const e=MAPS[mapKey()];
+  document.querySelectorAll('[data-v]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===variant));
+  const hasLoc=!!MAPS[MK[cur]+'-map-locations'];document.getElementById('layerSeg').hidden=!hasLoc;
+  document.querySelectorAll('[data-l]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===layerSel));
+  const fromFT=['fa','zc','sp'].includes(cur)&&layerSel==='loc';
+  document.getElementById('credit').innerHTML=fromFT
+    ?'Mapa lokacji: Krueger – poradnik „Tales from the Far Territory map locations” (Steam). Pinezki i notatki są Twoje i zapisują się w tej przeglądarce.'
+    :'Mapa: HokuOwl – poradnik „Updated Region Maps [2024]” (Steam). Pinezki i notatki są Twoje i zapisują się w tej przeglądarce.';
+  img.removeAttribute('src');V.iw=0;layer.style.visibility='hidden';
+  if(!e){vstatus.hidden=false;vstatus.textContent='Brak szczegółowej mapy dla tego miejsca.';return}
+  vstatus.hidden=false;vstatus.textContent='Wczytywanie mapy…';
+  img.onload=()=>{V.iw=img.naturalWidth;V.ih=img.naturalHeight;vstatus.hidden=true;layer.style.visibility='visible';renderPins();fit()};
+  img.onerror=()=>{vstatus.hidden=false;vstatus.textContent='Nie udało się wczytać mapy. Sprawdź połączenie i odśwież stronę.'};
+  img.src=e[variant]||e.pilgrim;
+}
+document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{variant=b.dataset.v;save('tld-variant',variant);loadMap()});
+document.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{layerSel=b.dataset.l;loadMap()});
+document.getElementById('zin').onclick=()=>zoomAt(1.5,viewer.clientWidth/2,viewer.clientHeight/2);
+document.getElementById('zout').onclick=()=>zoomAt(1/1.5,viewer.clientWidth/2,viewer.clientHeight/2);
+document.getElementById('zfit').onclick=fit;
+addEventListener('resize',()=>{if(cur&&V.iw)fit()});
+viewer.addEventListener('wheel',ev=>{if(!V.iw)return;ev.preventDefault();const r=viewer.getBoundingClientRect();zoomAt(Math.exp(-ev.deltaY*0.0015),ev.clientX-r.left,ev.clientY-r.top)},{passive:false});
+const ptr=new Map();let moved=0,pinch=null;
+viewer.addEventListener('pointerdown',ev=>{if(ev.target.closest('.vctrl'))return;viewer.setPointerCapture(ev.pointerId);ptr.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});moved=0;
+  if(ptr.size===2){const [a,b]=[...ptr.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y)}}else viewer.classList.add('drag')});
+viewer.addEventListener('pointermove',ev=>{if(!ptr.has(ev.pointerId))return;const p=ptr.get(ev.pointerId),dx=ev.clientX-p.x,dy=ev.clientY-p.y;
+  if(ptr.size===1){V.x+=dx;V.y+=dy;moved+=Math.abs(dx)+Math.abs(dy);apply()}
+  ptr.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});
+  if(ptr.size===2&&pinch){const [a,b]=[...ptr.values()],d=Math.hypot(a.x-b.x,a.y-b.y),r=viewer.getBoundingClientRect();zoomAt(d/pinch.d,(a.x+b.x)/2-r.left,(a.y+b.y)/2-r.top);pinch.d=d;moved+=10}});
+function up(ev){if(!ptr.has(ev.pointerId))return;ptr.delete(ev.pointerId);if(ptr.size<2)pinch=null;viewer.classList.remove('drag');
+  if(ev.type==='pointerup'&&moved<6&&pinMode&&V.iw&&!ev.target.closest('.vctrl')){const r=viewer.getBoundingClientRect();
+    const fx=((ev.clientX-r.left)-V.x)/V.s/V.iw,fy=((ev.clientY-r.top)-V.y)/V.s/V.ih;
+    if(fx>=0&&fx<=1&&fy>=0&&fy<=1){const ni=document.getElementById('pnote');(pins2[cur]=pins2[cur]||[]).push({x:+fx.toFixed(4),y:+fy.toFixed(4),type:tool,note:(ni&&ni.value||'').trim()});if(ni)ni.value='';save('tld-pins2',pins2);renderPins();renderRPanel()}}}
+viewer.addEventListener('pointerup',up);viewer.addEventListener('pointercancel',up);
 const SYM={shelter:'⌂',res:'○',danger:'✕',note:'•'};
 const SYMN={shelter:'schronienie',res:'zasoby',danger:'niebezpieczeństwo',note:'notatka'};
-function drawRegion(){
-  const k=cur,r=R[k];
-  const g=defs(rmap,1000,640);
-  mountains(g,1000,640,[{x:500,y:310,r:230},{x:930,y:90,r:70}],k.charCodeAt(0)*31+k.charCodeAt(1),46);
-  compass(g,930,90);
-  tag(rmap,500,300,r.n,'middle','xl');
-  const te=mk(rmap,'text',{x:500,y:342,'text-anchor':'middle',class:'lbl-big','font-size':15,'letter-spacing':'.18em',fill:'var(--char-2)'});te.textContent=r.en.toUpperCase();
-  const pr=pins[k]||[];
-  if(!pr.length){const h=mk(rmap,'text',{x:500,y:380,'text-anchor':'middle',class:'lbl-big','font-size':16,fill:'var(--char-2)'});h.textContent='Kliknij na arkuszu, aby postawić pinezkę – narysuj własną mapę jak węglem w grze.'}
-  // wyjścia
-  const cx=500,cy=320;
-  adj[k].forEach(e=>{
-    const B=P(e.to),A=r;let dx=B.x-A.x,dy=B.y-A.y;const L=Math.hypot(dx,dy);dx/=L;dy/=L;
-    const t=Math.min(440/Math.abs(dx||1e-6),260/Math.abs(dy||1e-6));
-    const ex=cx+dx*t,ey=cy+dy*t,ix=cx+dx*(t-70),iy=cy+dy*(t-70);
-    const eg=mk(rmap,'g',{class:'ex'});
-    const lg=mk(eg,'g',{filter:`url(#rough${rmap.id})`});
-    mk(lg,'path',{d:`M${ix} ${iy} L${ex} ${ey}`,stroke:'var(--char)','stroke-width':2.6,fill:'none','stroke-dasharray':E[e.i][3]?'7 6':null});
-    const ang=Math.atan2(dy,dx),ah=12;
-    mk(lg,'path',{d:`M${ex-ah*Math.cos(ang-0.5)} ${ey-ah*Math.sin(ang-0.5)} L${ex} ${ey} L${ex-ah*Math.cos(ang+0.5)} ${ey-ah*Math.sin(ang+0.5)}`,stroke:'var(--char)','stroke-width':2.6,fill:'none'});
-    const dests=R[e.to]?[e.to]:adj[e.to].map(f=>f.to).filter(x=>x!==k&&R[x]);
-    const anchor=dx>0.35?'end':dx<-0.35?'start':'middle';
-    const lines=dests.length+(T[e.to]?1:0),lx=ix-dx*12,ly0=iy-dy*10+(dy<-0.3?-4:dy>0.3?-(lines*24)+14:-((lines-1)*12));
-    let ly=ly0;
-    if(T[e.to]){tag(eg,lx,ly,'◇ '+T[e.to].n,anchor,'via');ly+=24}
-    dests.forEach(d=>{const tl=tag(eg,lx,ly,'→ '+R[d].n,anchor);tl.setAttribute('tabindex',0);tl.setAttribute('role','link');
-      tl.addEventListener('click',ev=>{ev.stopPropagation();openRegion(d)});
-      tl.addEventListener('keydown',ev=>{if(ev.key==='Enter')openRegion(d)});ly+=24});
-  });
-  // pinezki
-  pr.forEach((p,i)=>{const pg=mk(rmap,'g',{class:'pin'});
-    const sg=mk(pg,'g',{filter:`url(#rough${rmap.id})`,stroke:'var(--char)','stroke-width':2.4,fill:'none','stroke-linecap':'round'});
-    if(p.type==='shelter')mk(sg,'path',{d:`M${p.x-10} ${p.y+9} V${p.y-2} L${p.x} ${p.y-11} L${p.x+10} ${p.y-2} V${p.y+9} Z`,fill:'var(--paper)'});
-    else if(p.type==='res')mk(sg,'circle',{cx:p.x,cy:p.y,r:9});
-    else if(p.type==='danger')mk(sg,'path',{d:`M${p.x-9} ${p.y-9} L${p.x+9} ${p.y+9} M${p.x+9} ${p.y-9} L${p.x-9} ${p.y+9}`,stroke:'var(--hard)','stroke-width':3});
-    else mk(sg,'circle',{cx:p.x,cy:p.y,r:5,fill:'var(--char)'});
-    if(p.note){const n=mk(pg,'text',{x:p.x+16,y:p.y+5});n.textContent=p.note}
-    pg.addEventListener('click',ev=>ev.stopPropagation());
-  });
-}
-rmap.addEventListener('click',ev=>{
-  if(!cur)return;const pt=rmap.createSVGPoint();pt.x=ev.clientX;pt.y=ev.clientY;
-  const p=pt.matrixTransform(rmap.getScreenCTM().inverse());
-  const note=(document.getElementById('pnote')||{}).value||'';
-  (pins[cur]=pins[cur]||[]).push({x:Math.round(p.x),y:Math.round(p.y),type:tool,note:note.trim()});
-  save('tld-pins',pins);const ni=document.getElementById('pnote');if(ni)ni.value='';drawRegion();renderRPanel();
-});
+function renderPins(){pinsLayer.innerHTML=(pins2[cur]||[]).map(p=>`<div class="mpin ${p.type}" data-x="${p.x}" data-y="${p.y}"><span><i>${SYM[p.type]}</i>${p.note?`<b>${p.note.replace(/[<&>]/g,'')}</b>`:''}</span></div>`).join('');apply()}
+
 function renderRPanel(){
-  const k=cur,r=R[k],p=document.getElementById('rpanel'),pr=pins[k]||[],dn=done[k]||{};
-  p.innerHTML=`<div><p class="lbl">Region</p><h3>${r.n}</h3><div class="en">${r.en}</div></div>${tagsHTML(r)}<p>${r.t}</p>
-  <label class="check"><input type="checkbox" id="rvis" ${visited[k]?'checked':''}> Byłem tu</label>
-  <div><p class="lbl">Ważne miejsca</p><ul class="places">${r.k.map((x,i)=>`<li><label><input type="checkbox" data-i="${i}" ${dn[i]?'checked':''}><span class="${dn[i]?'done':''}">${x[0]}<small>${x[1]}</small></span></label></li>`).join('')}</ul></div>
-  <div><p class="lbl">Pinezki</p>
-    <div class="tools" role="group" aria-label="Rodzaj pinezki">${Object.keys(SYM).map(s=>`<button class="btn" data-t="${s}" aria-pressed="${s===tool}">${SYM[s]} ${SYMN[s]}</button>`).join('')}</div>
-    <div style="margin-top:8px"><input type="text" id="pnote" placeholder="Podpis (opcjonalnie), potem kliknij na arkuszu" maxlength="40"></div>
-    ${pr.length?`<ul class="pins" style="margin-top:10px">${pr.map((x,i)=>`<li><span>${SYM[x.type]} ${x.note||SYMN[x.type]}</span><button data-d="${i}">usuń</button></li>`).join('')}</ul><div class="row" style="margin-top:8px"><button class="btn" id="clr">Wyczyść pinezki</button></div>`:'<p class="hint" style="margin-top:8px">Brak pinezek w tym regionie.</p>'}
-  </div>
-  ${connsHTML(k)}`;
-  p.querySelector('#rvis').onchange=e=>{e.target.checked?visited[k]=1:delete visited[k];save('tld-visited',visited)};
+  const k=cur,it=Q(k),p=document.getElementById('rpanel'),pr=pins2[k]||[];
+  const isR=!!R[k],dn=done[k]||{};
+  let head=`<div><p class="lbl">${isR?'Region':T[k]?'Strefa przejściowa':'Mapa'}</p><h3>${it.n}</h3><div class="en">${it.en}</div></div>`;
+  let body='';
+  if(isR){const r=R[k];body=`${tagsHTML(r)}<p>${r.t}</p>
+    <label class="check"><input type="checkbox" id="rvis" ${visited[k]?'checked':''}> Byłem tu</label>
+    <div><p class="lbl">Ważne miejsca</p><ul class="places">${r.k.map((x,i)=>`<li><label><input type="checkbox" data-i="${i}" ${dn[i]?'checked':''}><span class="${dn[i]?'done':''}">${x[0]}<small>${x[1]}</small></span></label></li>`).join('')}</ul></div>`}
+  else if(T[k]){const ns=(adj[k]||[]).filter(e=>R[e.to]);body=`<p>Łączy: ${ns.map(e=>R[e.to].n).join(', ')}.</p>`}
+  const pinsHTML=`<div><p class="lbl">Pinezki</p>
+    <button class="btn ${pinMode?'primary':''}" id="pm" aria-pressed="${pinMode}">${pinMode?'Stawianie pinezek: włączone':'Stawiaj pinezki'}</button>
+    ${pinMode?`<div class="tools" role="group" aria-label="Rodzaj pinezki" style="margin-top:8px">${Object.keys(SYM).map(s=>`<button class="btn" data-t="${s}" aria-pressed="${s===tool}">${SYM[s]} ${SYMN[s]}</button>`).join('')}</div>
+    <div style="margin-top:8px"><input type="text" id="pnote" placeholder="Podpis, potem kliknij na mapie" maxlength="40"></div>`:''}
+    ${pr.length?`<ul class="pins" style="margin-top:10px">${pr.map((x,i)=>`<li><span>${SYM[x.type]} ${x.note||SYMN[x.type]}</span><button data-d="${i}">usuń</button></li>`).join('')}</ul>`:'<p class="hint" style="margin-top:8px">Brak pinezek na tej mapie.</p>'}</div>`;
+  const conns=isR?connsHTML(k):T[k]?`<div><p class="lbl">Przejdź do</p><ul class="conns">${(adj[k]||[]).filter(e=>R[e.to]).map(e=>`<li><button data-k="${e.to}">${R[e.to].n}</button><small>${e.t}</small></li>`).join('')}</ul></div>`:'';
+  p.innerHTML=head+body+pinsHTML+conns;
+  const rv=p.querySelector('#rvis');if(rv)rv.onchange=e=>{e.target.checked?visited[k]=1:delete visited[k];save('tld-visited',visited)};
   p.querySelectorAll('.places input').forEach(c=>c.onchange=()=>{done[k]=done[k]||{};c.checked?done[k][c.dataset.i]=1:delete done[k][c.dataset.i];save('tld-done',done);renderRPanel()});
+  p.querySelector('#pm').onclick=()=>{pinMode=!pinMode;viewer.classList.toggle('pinmode',pinMode);renderRPanel()};
   p.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{tool=b.dataset.t;p.querySelectorAll('[data-t]').forEach(x=>x.setAttribute('aria-pressed',x===b))});
-  p.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{pins[k].splice(+b.dataset.d,1);save('tld-pins',pins);drawRegion();renderRPanel()});
-  const clr=p.querySelector('#clr');if(clr)clr.onclick=()=>{if(clr.dataset.ok){pins[k]=[];save('tld-pins',pins);drawRegion();renderRPanel()}else{clr.dataset.ok=1;clr.textContent='Na pewno? Kliknij ponownie'}};
+  p.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{pins2[k].splice(+b.dataset.d,1);save('tld-pins2',pins2);renderPins();renderRPanel()});
   p.querySelectorAll('.conns button').forEach(b=>b.onclick=()=>openRegion(b.dataset.k));
 }
 
@@ -545,7 +602,7 @@ q.oninput=renderGrid;
 })();
 
 renderGrid();route('init');showView();
-if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{cur?drawRegion():draw()});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(!cur)draw()});
 </script>
 </body>
 </html>
