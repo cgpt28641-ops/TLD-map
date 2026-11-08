@@ -208,7 +208,7 @@ const DC={1:'var(--easy)',2:'var(--mid)',3:'var(--hard)'};
 const TC={1:'#a9bd73',2:'#e0b25c',3:'#e07a62'};
 const R={
  ml:{n:'Tajemnicze Jezioro',en:'Mystery Lake',d:1,x:470,y:420,t:'Śródlądowe jezioro i linia kolejowa, chatki i łowienie ryb. Najlepszy start – środek wyspy, tory jako punkt orientacyjny.',
-   k:[['Camp Office','biuro obozu nad jeziorem'],['Trapper\'s Homestead','chata trapera, przejście do Górskiego Miasteczka'],['Carter Hydro Dam','tama, droga do Krętej Rzeki'],['Forestry Lookout','wieża obserwacyjna na wzgórzu'],['Lake Cabins','chatki nad jeziorem'],['Alan\'s Cave','jaskinia przy torach']]},
+   k:[['Camp Office','biuro obozu nad jeziorem'],['Trapper\'s Homestead','chata trapera, przejście do Milton'],['Carter Hydro Dam','tama, droga do Krętej Rzeki'],['Forestry Lookout','wieża obserwacyjna na wzgórzu'],['Lake Cabins','chatki nad jeziorem'],['Alan\'s Cave','jaskinia przy torach']]},
  ch:{n:'Autostrada Przybrzeżna',en:'Coastal Highway',d:2,x:300,y:520,t:'Zamarznięta zatoka i nadbrzeżna droga z osadą i obozem rybackim.',
    k:[['Quonset Garage','stacja benzynowa i warsztat'],['Coastal Townsite','osada przy drodze'],['Fishing Camp','obóz rybacki na lodzie'],['Jackrabbit Island','wyspa na zatoce'],['Cinder Hills Coal Mine','kopalnia – przejście do Przyjemnej Doliny']]},
  pv:{n:'Przyjemna Dolina',en:'Pleasant Valley',d:3,x:300,y:290,t:'Otwarte pola i długie odsłonięte trasy – częste zamiecie. Trzymaj się dróg.',
@@ -221,8 +221,8 @@ const R={
    k:[['Old Spence Family Homestead','gospodarstwo Spence\'ów'],['Poacher\'s Camp','obóz kłusowników'],['Shortwave Tower','wieża krótkofalowa'],['Muskeg Overlook','punkt widokowy nad bagnem']]},
  br:{n:'Zniszczona Kolej',en:'Broken Railroad',d:2,x:760,y:290,t:'Krótki region kolejowy z warsztatem kolejowym i domkiem myśliwskim. Brama do Far Territory.',
    k:[['Maintenance Yard','warsztat kolejowy z kuźnią'],['Hunting Lodge','domek myśliwski'],['Far Range Branch Line','koniec torów – droga do Przełęczy Przeładunkowej']]},
- mt:{n:'Górskie Miasteczko',en:'Mountain Town',d:1,x:580,y:260,t:'Miasteczko Milton w górskiej kotlinie. Mało drapieżników, dużo jedzenia i schronień.',
-   k:[['Milton','miasteczko z domami i sklepami'],['Grey Mother\'s House','dom Szarej Matki'],['Orca Gas Station','stacja benzynowa'],['Paradise Meadows Farm','farma na obrzeżach'],['Spruce Falls','most – w pobliżu jaskinia do Doliny Cichej Rzeki']]},
+ mt:{n:'Milton',en:'Mountain Town',al:'Górskie Miasteczko',d:1,x:580,y:260,t:'Region Mountain Town z miasteczkiem Milton w górskiej kotlinie. Mało drapieżników, dużo jedzenia i schronień.',
+   k:[['Milton (miasteczko)','domy, sklep, poczta i bank'],['Grey Mother\'s House','dom Szarej Matki'],['Orca Gas Station','stacja benzynowa'],['Paradise Meadows Farm','farma na obrzeżach'],['Spruce Falls','most – w pobliżu jaskinia do Doliny Cichej Rzeki']]},
  hr:{n:'Dolina Cichej Rzeki',en:'Hushed River Valley',d:3,x:560,y:100,t:'Odległa, wielopoziomowa dolina klifów, jaskiń i wodospadów. Prawie bez budynków – schronienia głównie w jaskiniach.',
    k:[['Wodospady','wielopoziomowe zamarznięte wodospady'],['Jaskinie','główne schronienia regionu']]},
  bi:{n:'Ponura Zatoka',en:'Bleak Inlet',d:3,x:610,y:575,t:'Przemysłowe wybrzeże z konserwownią, stromy teren i stada timberwolfów.',
@@ -473,7 +473,7 @@ document.getElementById('swap').onclick=()=>{const t=fromS.value;fromS.value=toS
 const q=document.getElementById('q');
 function renderGrid(){
   const s=q.value.trim().toLowerCase();
-  const ks=Object.keys(R).filter(k=>matches(k)&&(!s||R[k].n.toLowerCase().includes(s)||R[k].en.toLowerCase().includes(s)));
+  const ks=Object.keys(R).filter(k=>matches(k)&&(!s||R[k].n.toLowerCase().includes(s)||R[k].en.toLowerCase().includes(s)||(R[k].al||'').toLowerCase().includes(s)));
   document.getElementById('grid').innerHTML=ks.length?ks.map(k=>{const r=R[k];
     return `<button class="card" style="--c:${TC[r.d]}" data-k="${k}"><h4>${r.n}${visited[k]?'<span class="v">✓ byłem</span>':''}</h4><span class="meta">${r.en} · ${DN[r.d]}${r.dlc?' · DLC':''}</span><p>${r.t}</p></button>`}).join(''):'<p class="empty">Brak regionów dla tego filtra.</p>';
   document.querySelectorAll('.card').forEach(c=>c.onclick=()=>openRegion(c.dataset.k));
