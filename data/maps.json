@@ -118,5 +118,29 @@
   "connections-between-regions": {
     "pilgrim": "https://images.steamusercontent.com/ugc/13036389424810677653/1424E21B04EADA5BE64A48B12FD4AB6C29FC76B4/",
     "interloper": "https://images.steamusercontent.com/ugc/13036389424810677653/1424E21B04EADA5BE64A48B12FD4AB6C29FC76B4/"
+  },
+  "|tftft|-transfer-pass": {
+    "pilgrim": "https://images.steamusercontent.com/ugc/37819645136731165/2F143B1F4452AE9F9688686307AEAFE77D64CD0C/",
+    "interloper": "https://images.steamusercontent.com/ugc/37819645136731499/1A9515074C6E2DFE5960A3886C0534BB20265B41/"
+  },
+  "|tftft|-forsaken-airfield": {
+    "pilgrim": "https://images.steamusercontent.com/ugc/16913663260970933264/FB109BD04EA8ED996F248F237F7DDD07BB98CF4B/",
+    "interloper": "https://images.steamusercontent.com/ugc/10851226945735149924/44743CB450B469D5596D322623AAC3DF36CAAC04/"
+  },
+  "|tftft|-zone-of-contamination": {
+    "pilgrim": "https://images.steamusercontent.com/ugc/10376660445325975268/BCF107D90B0B9E2D6D301731D0DFC0975F8E7EDB/",
+    "interloper": "https://images.steamusercontent.com/ugc/10958718653805267230/55045BF44ACECE678A21417948002A17C0AC973A/"
+  },
+  "|tftft|-sundered-pass": {
+    "pilgrim": "https://images.steamusercontent.com/ugc/13234845787225905708/3CCD158148CAF4F6E5651269D63AA378F2C7B361/",
+    "interloper": "https://images.steamusercontent.com/ugc/16979676319684412643/EE2D7A9F25D9742C4F9256678705F0A0B8286A48/"
+  },
+  "|ir|-port-remnant": {
+    "pilgrim": "https://images.steamusercontent.com/ugc/14216955206204295630/33EBD074037F3AC9FCA01CA2DB3C1DC532DB6F2F/",
+    "interloper": "https://images.steamusercontent.com/ugc/14808442892153759824/427D534021CF55E4F2FEB6061C568BA8E5ED42B4/"
+  },
+  "|tftft|-far-range-branch-line": {
+    "pilgrim": "https://images.steamusercontent.com/ugc/12967305776514005370/390463FA1E9F539BCB876BF25E3065276D75DED2/",
+    "interloper": "https://images.steamusercontent.com/ugc/10893453294679762817/2CC6706F93D63DD60EF48511CB98A2B27EF149A9/"
   }
 }
